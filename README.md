@@ -64,8 +64,10 @@ It's designed to be easy to grow:
 Test locally with a tiny server (some things don't work from `file://`):
 
 ```bash
-python -m http.server 8000
-# then open http://localhost:8000
+python -m http.server 8791
+# then open http://localhost:8791
+# NOTE: avoid port 8000 — a local service (NT-ware MOM) grabs it and
+# redirects to https://localhost:8443. Use 8791 (or any other free port).
 ```
 
 ---
