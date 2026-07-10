@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fundamentals — AI × Coding</title>
+<meta name="description" content="Beginner-level explanations of the core AI concepts: LLMs, tokens, prompts, context windows, embeddings, RAG, tool use, reasoning models, and agents." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>" />
+<link rel="stylesheet" href="assets/style.css" />
+<script src="assets/hub.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="index.html">🤖 <span>AI × Coding</span></a>
+  <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">☰</button>
+  <nav class="site-nav">
+    <a href="index.html">Home</a>
+    <a href="fundamentals.html">Fundamentals</a>
+    <a href="timeline.html">Timeline</a>
+    <a href="apply.html">Apply to Coding</a>
+    <a href="tools.html">Tools &amp; Workflows</a>
+    <a href="glossary.html">Glossary</a>
+    <a class="ext" href="game/">🎮 Game Lab</a>
+    <button class="theme-toggle" aria-label="Toggle light/dark theme">🌙</button>
+  </nav>
+</header>
+
+<main>
+  <h1>🧱 Fundamentals</h1>
+  <p class="lead" style="font-size:1.1rem;color:var(--ink-soft)">The building blocks, in order. Each idea builds on the
+    one before it — read straight through the first time and the rest of the AI world stops feeling like magic.</p>
+
+  <nav class="toc" aria-label="On this page">
+    <strong>On this page</strong>
+    <ul>
+      <li><a href="#nesting">AI vs ML vs LLM</a></li>
+      <li><a href="#llm">How an LLM works</a></li>
+      <li><a href="#tokens">Tokens</a></li>
+      <li><a href="#prompt">Prompts &amp; system prompts</a></li>
+      <li><a href="#context">Context window</a></li>
+      <li><a href="#temperature">Temperature</a></li>
+      <li><a href="#training">Training &amp; fine-tuning</a></li>
+      <li><a href="#hallucination">Hallucination</a></li>
+      <li><a href="#multimodal">Multimodal</a></li>
+      <li><a href="#embeddings">Embeddings &amp; vectors</a></li>
+      <li><a href="#rag">RAG</a></li>
+      <li><a href="#tools">Tool use / function calling</a></li>
+      <li><a href="#reasoning">Reasoning models</a></li>
+      <li><a href="#agents">Agents</a></li>
+      <li><a href="#choose">Prompt vs RAG vs fine-tune</a></li>
+    </ul>
+  </nav>
+
+  <!-- ===================== NESTING ===================== -->
+  <section id="nesting">
+    <h2>AI vs Machine Learning vs LLM</h2>
+    <p>These words get used interchangeably, but they're nested — like Russian dolls.</p>
+    <ul>
+      <li><b>Artificial Intelligence (AI)</b> — the broad goal: machines doing things that seem “smart.”</li>
+      <li><b>Machine Learning (ML)</b> — a way to get there: instead of hand-writing rules, you show a program
+        lots of examples and it <i>learns</i> the patterns.</li>
+      <li><b>Deep Learning / Neural Networks</b> — a powerful kind of ML loosely inspired by brain cells,
+        good at messy data like images and language.</li>
+      <li><b>Large Language Model (LLM)</b> — a very large neural network trained on text. This is what powers
+        ChatGPT, Claude, Gemini, Copilot, and the coding tools you'll use.</li>
+    </ul>
+    <div class="callout plain">
+      <span class="tag">💡 In plain English</span>
+      <p>“AI” is the dream, “machine learning” is the method, and an “LLM” is today's breakout star of that method —
+        specialized in language and code.</p>
+    </div>
+  </section>
+
+  <!-- ===================== LLM ===================== -->
+  <section id="llm">
+    <h2>How an LLM actually works</h2>
+    <p>An LLM is a <b>next-token predictor</b>. You give it some text, and it repeatedly guesses the most likely
+      next piece of text, adding one piece at a time until it's done.</p>
+
+    <svg class="diagram" viewBox="0 0 640 180" role="img" aria-label="A prompt goes into the model, which predicts the next word with probabilities">
+      <rect x="10" y="55" width="150" height="70" rx="10" fill="var(--accent-soft)" stroke="var(--border)"/>
+      <text x="85" y="85" text-anchor="middle" font-size="13" fill="var(--ink)">Your prompt:</text>
+      <text x="85" y="105" text-anchor="middle" font-size="13" fill="var(--ink-soft)">“The cat sat on the”</text>
+      <line x1="165" y1="90" x2="215" y2="90" stroke="var(--ink-faint)" stroke-width="2" marker-end="url(#ar)"/>
+      <rect x="220" y="50" width="120" height="80" rx="12" fill="var(--accent)" />
+      <text x="280" y="86" text-anchor="middle" font-size="14" fill="#fff" font-weight="700">LLM</text>
+      <text x="280" y="106" text-anchor="middle" font-size="11" fill="#fff">pattern engine</text>
+      <line x1="345" y1="90" x2="395" y2="90" stroke="var(--ink-faint)" stroke-width="2" marker-end="url(#ar)"/>
+      <text x="410" y="45" font-size="11" fill="var(--ink-faint)">next word, ranked by likelihood:</text>
+      <rect x="410" y="55" width="210" height="22" rx="6" fill="var(--bg-elev)" stroke="var(--ifthen)"/>
+      <text x="418" y="70" font-size="12" fill="var(--ink)">“mat” — 92%</text>
+      <rect x="410" y="82" width="150" height="20" rx="6" fill="var(--bg-elev)" stroke="var(--border)"/>
+      <text x="418" y="96" font-size="12" fill="var(--ink-soft)">“floor” — 4%</text>
+      <rect x="410" y="107" width="120" height="20" rx="6" fill="var(--bg-elev)" stroke="var(--border)"/>
+      <text x="418" y="121" font-size="12" fill="var(--ink-soft)">“roof” — 1%</text>
+      <defs>
+        <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="var(--ink-faint)"/>
+        </marker>
+      </defs>
+    </svg>
+
+    <div class="callout example">
+      <span class="tag">🔍 Example</span>
+      <p>Type <code>def add(a, b):</code> into a coding assistant and it predicts <code>return a + b</code> — not because
+        it “understands” math, but because it has seen that pattern countless times.</p>
+    </div>
+    <div class="callout watch">
+      <span class="tag">⚠️ Watch out</span>
+      <p>Because it's predicting likely text (not fact-checking), it can produce answers that <i>sound</i> perfect but
+        are wrong. That's called a <a href="#hallucination">hallucination</a> — always verify.</p>
+    </div>
+  </section>
+
+  <!-- ===================== TOKENS ===================== -->
+  <section id="tokens">
+    <h2>Tokens</h2>
+    <p>Models don't read whole words — they read <b>tokens</b>, which are word-chunks. A token is roughly ¾ of a word
+      in English (about 4 characters).</p>
+    <ul>
+      <li><code>cat</code> → 1 token</li>
+      <li><code>unbelievable</code> → often 3 tokens (<code>un</code> · <code>believ</code> · <code>able</code>)</li>
+      <li>Rough rule of thumb: <b>100 tokens ≈ 75 words</b>.</li>
+    </ul>
+    <div class="callout tip">
+      <span class="tag">✅ Tip</span>
+      <p>Tokens matter for two practical reasons: (1) API pricing is usually <b>per token</b>, and (2) every model has a
+        maximum number of tokens it can handle at once — its <a href="#context">context window</a>.</p>
+    </div>
+  </section>
+
+  <!-- ===================== PROMPT ===================== -->
+  <section id="prompt">
+    <h2>Prompts &amp; system prompts</h2>
+    <p>A <b>prompt</b> is simply the text you send the model. <b>Prompt engineering</b> is the craft of wording that
+      text so you get a better answer.</p>
+    <p>Most chat tools also have a hidden <b>system prompt</b> — a standing instruction set behind the scenes
+      (“You are a helpful coding assistant. Be concise.”) that shapes every reply.</p>
+    <div class="callout example">
+      <span class="tag">🔍 Example</span>
+      <p><b>Weak:</b> “Fix my code.” &nbsp;→&nbsp; <b>Strong:</b> “This Python function throws
+        <code>KeyError</code> when the input list is empty. Here's the function and the error. Fix it and explain the
+        one-line change.”</p>
+    </div>
+    <p>Four ingredients of a strong prompt:</p>
+    <ul>
+      <li><b>Role/goal</b> — what you want and who it's for.</li>
+      <li><b>Context</b> — the code, error, constraints, versions.</li>
+      <li><b>Format</b> — “give me a diff,” “bullet list,” “just the function.”</li>
+      <li><b>Examples</b> — show one input/output pair when the task is fuzzy (called <b>few-shot</b> prompting).</li>
+    </ul>
+    <p class="muted">There's a full, coding-specific prompting guide over in <a href="apply.html#prompting">Apply to Coding</a>.</p>
+  </section>
+
+  <!-- ===================== CONTEXT ===================== -->
+  <section id="context">
+    <h2>Context window</h2>
+    <p>The <b>context window</b> is the model's short-term memory — the maximum amount of text (in tokens) it can
+      consider at one time. Everything has to fit: the system prompt, your conversation so far, any files you pasted,
+      <i>and</i> the room it needs to write the answer.</p>
+
+    <svg class="diagram" viewBox="0 0 620 150" role="img" aria-label="The context window holds system prompt, history, your message, and space for the reply">
+      <rect x="10" y="20" width="600" height="110" rx="12" fill="var(--bg-elev)" stroke="var(--accent)" stroke-width="2"/>
+      <text x="310" y="14" text-anchor="middle" font-size="12" fill="var(--ink-faint)">◄ everything must fit inside the context window ►</text>
+      <rect x="25" y="45" width="120" height="65" rx="8" fill="var(--accent-soft)" stroke="var(--border)"/>
+      <text x="85" y="82" text-anchor="middle" font-size="12" fill="var(--ink)">System prompt</text>
+      <rect x="155" y="45" width="150" height="65" rx="8" fill="var(--accent-soft)" stroke="var(--border)"/>
+      <text x="230" y="75" text-anchor="middle" font-size="12" fill="var(--ink)">Conversation +</text>
+      <text x="230" y="92" text-anchor="middle" font-size="12" fill="var(--ink)">files you shared</text>
+      <rect x="315" y="45" width="130" height="65" rx="8" fill="var(--accent-soft)" stroke="var(--border)"/>
+      <text x="380" y="82" text-anchor="middle" font-size="12" fill="var(--ink)">Your new message</text>
+      <rect x="455" y="45" width="140" height="65" rx="8" fill="var(--bg)" stroke="var(--ifthen)" stroke-dasharray="5 4"/>
+      <text x="525" y="75" text-anchor="middle" font-size="12" fill="var(--ink-soft)">room for the</text>
+      <text x="525" y="92" text-anchor="middle" font-size="12" fill="var(--ink-soft)">model's reply</text>
+    </svg>
+
+    <div class="callout example">
+      <span class="tag">🔍 Example</span>
+      <p>Modern models range from ~8,000 tokens (a few files) to <b>1,000,000+ tokens</b> (an entire codebase or book).
+        Bigger windows let you paste more, but relevant beats big.</p>
+    </div>
+    <div class="callout watch">
+      <span class="tag">⚠️ Watch out</span>
+      <p>When a chat gets very long, early messages can fall out of the window and the model “forgets” them. Models can
+        also lose focus with too much irrelevant text (“lost in the middle”). Start a fresh chat for a new task, and
+        share only what's relevant.</p>
+    </div>
+  </section>
+
+  <!-- ===================== TEMPERATURE ===================== -->
+  <section id="temperature">
+    <h2>Temperature (creativity dial)</h2>
+    <p>Since the model picks from ranked next-token options, <b>temperature</b> controls how adventurous that pick is.</p>
+    <ul>
+      <li><b>Low (≈0–0.3)</b> — picks the most likely option almost every time. Focused, repeatable, predictable.</li>
+      <li><b>High (≈0.8–1.2)</b> — more willing to pick less-likely options. Varied, creative, sometimes off the rails.</li>
+    </ul>
+    <div class="ifthen">
+      <div class="if"><span class="lbl">If</span> you're generating code, extracting data, or want the same answer twice…</div>
+      <div class="arrow">→</div>
+      <div class="then"><span class="lbl">Then</span> use a <b>low</b> temperature.</div>
+    </div>
+    <div class="ifthen">
+      <div class="if"><span class="lbl">If</span> you're brainstorming names, ideas, or copy variations…</div>
+      <div class="arrow">→</div>
+      <div class="then"><span class="lbl">Then</span> use a <b>higher</b> temperature. (Most chat apps hide this; it matters most when you call an API.)</div>
+    </div>
+  </section>
+
+  <!-- ===================== TRAINING ===================== -->
+  <section id="training">
+    <h2>Training, fine-tuning &amp; RLHF</h2>
+    <p>How a model gets its abilities — three stages worth knowing by name:</p>
+    <ul>
+      <li><b>Pre-training</b> — the model reads an enormous pile of text/code and learns general patterns. Slow and
+        very expensive; done by the model makers, not you.</li>
+      <li><b>Fine-tuning</b> — taking that general model and training it a bit more on a narrower set of examples so it
+        specializes (e.g., your company's writing style, a specific format).</li>
+      <li><b>RLHF</b> (Reinforcement Learning from Human Feedback) — humans rate answers, and the model is nudged toward
+        the helpful, honest, harmless ones. This is what turned raw text-predictors into polite, useful assistants.</li>
+    </ul>
+    <div class="callout tip">
+      <span class="tag">✅ Tip</span>
+      <p>A model's <b>knowledge cutoff</b> is the date its training data stops. Ask about something newer and it either
+        won't know or will guess — unless it can search the web or you give it the info (see <a href="#rag">RAG</a>).</p>
+    </div>
+  </section>
+
+  <!-- ===================== HALLUCINATION ===================== -->
+  <section id="hallucination">
+    <h2>Hallucination</h2>
+    <p>A <b>hallucination</b> is when the model states something false <i>with total confidence</i> — an invented
+      function that doesn't exist, a made-up citation, a plausible-but-wrong fact.</p>
+    <div class="callout plain">
+      <span class="tag">💡 In plain English</span>
+      <p>The model is optimized to produce <b>likely-sounding</b> text, not <b>true</b> text. Usually those overlap.
+        When they don't, you get a confident wrong answer. It isn't lying — it has no concept of truth.</p>
+    </div>
+    <p>How to reduce it:</p>
+    <ul>
+      <li>Give it the real source material instead of relying on memory (RAG).</li>
+      <li>Ask it to cite or show its work, then check.</li>
+      <li>For code: <b>run it</b>. Tests and the compiler are your fact-checkers.</li>
+    </ul>
+  </section>
+
+  <!-- ===================== MULTIMODAL ===================== -->
+  <section id="multimodal">
+    <h2>Multimodal models</h2>
+    <p><b>Multimodal</b> means the model handles more than just text — it can also take in (and sometimes produce)
+      images, audio, or video.</p>
+    <div class="callout example">
+      <span class="tag">🔍 Example</span>
+      <p>Paste a screenshot of a broken UI and ask “why is this button off-center?”, or hand it a photo of a whiteboard
+        diagram and ask it to turn it into code. That's multimodal input at work.</p>
+    </div>
+  </section>
+
+  <!-- ===================== EMBEDDINGS ===================== -->
+  <section id="embeddings">
+    <h2>Embeddings &amp; vectors</h2>
+    <p>An <b>embedding</b> turns a piece of text into a list of numbers (a <b>vector</b>) that captures its
+      <i>meaning</i>. Texts with similar meaning get similar numbers — so you can measure how related two things are by
+      how close their vectors are.</p>
+    <div class="callout example">
+      <span class="tag">🔍 Example</span>
+      <p>“How do I reset my password?” and “I forgot my login” land near each other, even though they share almost no
+        words. That's why search built on embeddings (<b>semantic search</b>) beats plain keyword matching.</p>
+    </div>
+    <p>Embeddings are stored in a <b>vector database</b>, and they're the engine behind the next concept — RAG.</p>
+  </section>
+
+  <!-- ===================== RAG ===================== -->
+  <section id="rag">
+    <h2>RAG — Retrieval-Augmented Generation</h2>
+    <p><b>RAG</b> is a pattern for giving a model knowledge it wasn't trained on — your docs, your codebase, last
+      week's news — <i>without</i> retraining it. You <b>retrieve</b> the relevant bits and paste them into the prompt
+      right before the model answers.</p>
+
+    <svg class="diagram" viewBox="0 0 660 210" role="img" aria-label="RAG: a question retrieves relevant chunks from a knowledge base, which are added to the prompt before the model answers">
+      <rect x="10" y="15" width="140" height="46" rx="9" fill="var(--accent-soft)" stroke="var(--border)"/>
+      <text x="80" y="43" text-anchor="middle" font-size="12" fill="var(--ink)">1. Your question</text>
+      <line x1="150" y1="38" x2="205" y2="38" stroke="var(--ink-faint)" stroke-width="2" marker-end="url(#ar2)"/>
+      <rect x="210" y="10" width="160" height="56" rx="9" fill="var(--bg-elev)" stroke="var(--example)"/>
+      <text x="290" y="33" text-anchor="middle" font-size="12" fill="var(--ink)">2. Search your</text>
+      <text x="290" y="50" text-anchor="middle" font-size="12" fill="var(--ink)">knowledge base</text>
+      <rect x="210" y="86" width="160" height="46" rx="9" fill="var(--bg)" stroke="var(--border)" stroke-dasharray="4 3"/>
+      <text x="290" y="106" text-anchor="middle" font-size="11" fill="var(--ink-soft)">📚 docs / code /</text>
+      <text x="290" y="122" text-anchor="middle" font-size="11" fill="var(--ink-soft)">tickets (vectors)</text>
+      <line x1="290" y1="86" x2="290" y2="66" stroke="var(--ink-faint)" stroke-width="2" marker-end="url(#ar2)"/>
+      <line x1="370" y1="38" x2="425" y2="38" stroke="var(--ink-faint)" stroke-width="2" marker-end="url(#ar2)"/>
+      <rect x="430" y="10" width="150" height="56" rx="9" fill="var(--accent-soft)" stroke="var(--border)"/>
+      <text x="505" y="33" text-anchor="middle" font-size="12" fill="var(--ink)">3. Add best</text>
+      <text x="505" y="50" text-anchor="middle" font-size="12" fill="var(--ink)">chunks to prompt</text>
+      <line x1="505" y1="66" x2="505" y2="120" stroke="var(--ink-faint)" stroke-width="2" marker-end="url(#ar2)"/>
+      <rect x="430" y="125" width="150" height="50" rx="9" fill="var(--accent)"/>
+      <text x="505" y="148" text-anchor="middle" font-size="13" fill="#fff" font-weight="700">4. LLM</text>
+      <text x="505" y="165" text-anchor="middle" font-size="11" fill="#fff">answers from real docs</text>
+      <defs>
+        <marker id="ar2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="var(--ink-faint)"/>
+        </marker>
+      </defs>
+    </svg>
+
+    <div class="callout plain">
+      <span class="tag">💡 In plain English</span>
+      <p>RAG is an <b>open-book exam</b>. Instead of hoping the model memorized the answer, you hand it the exact page
+        it needs and say “answer using this.” Fewer hallucinations, and it can cite sources.</p>
+    </div>
+    <div class="ifthen">
+      <div class="if"><span class="lbl">If</span> you need the model to answer using private or fast-changing information…</div>
+      <div class="arrow">→</div>
+      <div class="then"><span class="lbl">Then</span> reach for RAG before you consider fine-tuning — it's cheaper, updatable, and easier to trust.</div>
+    </div>
+  </section>
+
+  <!-- ===================== TOOL USE ===================== -->
+  <section id="tools">
+    <h2>Tool use / function calling</h2>
+    <p>On its own, a model can only produce text. <b>Tool use</b> (a.k.a. <b>function calling</b>) lets it <i>ask your
+      software to do something</i> — run code, search the web, query a database, hit an API — and then use the result
+      in its answer.</p>
+    <div class="callout example">
+      <span class="tag">🔍 Example</span>
+      <p>You ask “what's the weather in Boston?” The model can't know that. With tools, it outputs
+        <code>get_weather("Boston")</code>, your app runs it, feeds back “72°F,” and the model replies in plain language.</p>
+    </div>
+    <p>Tool use is the bridge from “a model that talks” to “a model that <i>does things</i>” — which sets up agents.</p>
+  </section>
+
+  <!-- ===================== REASONING ===================== -->
+  <section id="reasoning">
+    <h2>Reasoning models</h2>
+    <p><b>Reasoning models</b> are trained to “think before they answer” — generating a hidden chain of intermediate
+      steps, checking their own work, then giving you the final result. They're noticeably better at math, logic,
+      multi-step planning, and hard debugging.</p>
+    <div class="ifthen">
+      <div class="if"><span class="lbl">If</span> your task is a quick lookup, rename, or simple snippet…</div>
+      <div class="arrow">→</div>
+      <div class="then"><span class="lbl">Then</span> a fast standard model is cheaper and plenty good.</div>
+    </div>
+    <div class="ifthen">
+      <div class="if"><span class="lbl">If</span> the task needs planning across many steps or careful logic (a tricky bug, a system design)…</div>
+      <div class="arrow">→</div>
+      <div class="then"><span class="lbl">Then</span> switch to a reasoning model and accept it's a bit slower.</div>
+    </div>
+  </section>
+
+  <!-- ===================== AGENTS ===================== -->
+  <section id="agents">
+    <h2>Agents 🤖</h2>
+    <p>An <b>agent</b> is a model put in a <b>loop</b> with tools and a goal. Instead of answering once, it plans, takes
+      an action, looks at the result, and decides the next action — repeating until the goal is met. This is <i>the</i>
+      shift that defined 2024–2025 (see the <a href="timeline.html">Timeline</a>).</p>
+
+    <svg class="diagram" viewBox="0 0 560 230" role="img" aria-label="The agent loop: think, act with a tool, observe the result, repeat until done">
+      <rect x="200" y="10" width="160" height="40" rx="9" fill="var(--accent-soft)" stroke="var(--border)"/>
+      <text x="280" y="35" text-anchor="middle" font-size="12" fill="var(--ink)">🎯 Goal from you</text>
+      <line x1="280" y1="50" x2="280" y2="70" stroke="var(--ink-faint)" stroke-width="2" marker-end="url(#ar3)"/>
+      <rect x="200" y="72" width="160" height="46" rx="9" fill="var(--accent)"/>
+      <text x="280" y="93" text-anchor="middle" font-size="13" fill="#fff" font-weight="700">🧠 Think / plan</text>
+      <text x="280" y="109" text-anchor="middle" font-size="10" fill="#fff">what's the next step?</text>
+      <line x1="360" y1="95" x2="430" y2="95" stroke="var(--ink-faint)" stroke-width="2" marker-end="url(#ar3)"/>
+      <rect x="430" y="72" width="120" height="46" rx="9" fill="var(--bg-elev)" stroke="var(--example)"/>
+      <text x="490" y="93" text-anchor="middle" font-size="12" fill="var(--ink)">🔧 Act</text>
+      <text x="490" y="109" text-anchor="middle" font-size="10" fill="var(--ink-soft)">use a tool</text>
+      <line x1="490" y1="118" x2="490" y2="150" stroke="var(--ink-faint)" stroke-width="2" marker-end="url(#ar3)"/>
+      <rect x="430" y="152" width="120" height="46" rx="9" fill="var(--bg-elev)" stroke="var(--border)"/>
+      <text x="490" y="173" text-anchor="middle" font-size="12" fill="var(--ink)">👀 Observe</text>
+      <text x="490" y="189" text-anchor="middle" font-size="10" fill="var(--ink-soft)">read the result</text>
+      <line x1="430" y1="175" x2="285" y2="175" stroke="var(--ink-faint)" stroke-width="2" marker-end="url(#ar3)"/>
+      <line x1="280" y1="152" x2="280" y2="120" stroke="var(--ink-faint)" stroke-width="2" marker-end="url(#ar3)"/>
+      <text x="150" y="150" text-anchor="middle" font-size="11" fill="var(--ink-faint)">loop until</text>
+      <text x="150" y="165" text-anchor="middle" font-size="11" fill="var(--ink-faint)">goal is met</text>
+      <rect x="200" y="120" width="160" height="32" rx="9" fill="none"/>
+      <defs>
+        <marker id="ar3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="var(--ink-faint)"/>
+        </marker>
+      </defs>
+    </svg>
+
+    <div class="callout example">
+      <span class="tag">🔍 Example</span>
+      <p>A coding agent given “add dark mode” will read your files, edit the CSS and a toggle, run the app, notice a
+        contrast bug, fix it, and re-run — all before handing it back to you. You gave a <i>goal</i>, not step-by-step
+        instructions.</p>
+    </div>
+    <div class="callout watch">
+      <span class="tag">⚠️ Watch out</span>
+      <p>More autonomy = more ways to go wrong. Agents can take real actions (edit files, run commands, spend money), so
+        keep a human in the loop, work in version control, and review what they did before you ship it.</p>
+    </div>
+  </section>
+
+  <!-- ===================== CHOOSE ===================== -->
+  <section id="choose">
+    <h2>Prompting vs RAG vs fine-tuning — which do I need?</h2>
+    <p>A question that trips up almost everyone. Here's the honest order to try things in:</p>
+    <div class="ifthen">
+      <div class="if"><span class="lbl">If</span> the model just needs clearer instructions or better wording…</div>
+      <div class="arrow">→</div>
+      <div class="then"><span class="lbl">Then</span> <b>improve the prompt.</b> Free, instant, solves most problems. Start here.</div>
+    </div>
+    <div class="ifthen">
+      <div class="if"><span class="lbl">If</span> it needs <em>facts it doesn't have</em> — your docs, your code, recent info…</div>
+      <div class="arrow">→</div>
+      <div class="then"><span class="lbl">Then</span> use <b>RAG.</b> Give it the source material at question time.</div>
+    </div>
+    <div class="ifthen">
+      <div class="if"><span class="lbl">If</span> it needs a consistent <em>style, format, or behavior</em> that prompting can't reliably enforce…</div>
+      <div class="arrow">→</div>
+      <div class="then"><span class="lbl">Then</span> consider <b>fine-tuning.</b> Most powerful, most effort — a last resort, not a first move.</div>
+    </div>
+    <div class="callout tip">
+      <span class="tag">✅ Tip</span>
+      <p>Rule of thumb: <b>prompt first, RAG for knowledge, fine-tune for behavior.</b> 90% of everyday needs never get
+        past the first two.</p>
+    </div>
+    <hr />
+    <p class="center"><a class="btn" href="apply.html">Now put it to work → Apply to Coding</a></p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>A personal learning hub by Julia Sheehan · <a href="https://github.com/juliamsheehan/juliamsheehan.github.io">source on GitHub</a></p>
+  <p class="muted">Last reviewed July 2026. AI moves fast — check the linked official docs for the latest specifics.</p>
+</footer>
+
+</body>
+</html>
