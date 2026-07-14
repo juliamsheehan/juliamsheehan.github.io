@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Latest News — AI × Coding</title>
+<meta name="description" content="A periodic, beginner-friendly snapshot of what's new in AI — model releases, agents, tools, and policy — with links to live sources." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>" />
+<link rel="stylesheet" href="assets/style.css" />
+<script src="assets/hub.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="index.html">🤖 <span>AI × Coding</span></a>
+  <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">☰</button>
+  <nav class="site-nav">
+    <a href="index.html">Home</a>
+    <a href="fundamentals.html">Fundamentals</a>
+    <a href="timeline.html">Timeline</a>
+    <a href="news.html">Latest News</a>
+    <a href="apply.html">Apply to Coding</a>
+    <a href="tools.html">Tools &amp; Workflows</a>
+    <a href="glossary.html">Glossary</a>
+    <a class="ext" href="game/">🎮 Game Lab</a>
+    <button class="theme-toggle" aria-label="Toggle light/dark theme">🌙</button>
+  </nav>
+</header>
+
+<main>
+  <h1>📰 Latest News</h1>
+  <p class="lead" style="font-size:1.1rem;color:var(--ink-soft)">A plain-English snapshot of what's changing in AI right
+    now — the stuff worth knowing, not every headline. For the fundamentals that <em>don't</em> change weekly, see
+    <a href="fundamentals.html">Fundamentals</a>; for the long arc, see the <a href="timeline.html">Timeline</a>.</p>
+
+  <div class="callout watch">
+    <span class="tag">⚠️ How to read this page</span>
+    <p>This is a <b>hand-curated snapshot</b>, not a live feed — it's updated periodically (see the date below), so it
+      can lag by a few weeks. For real-time news, use the trusted sources at the <a href="#keep-up">bottom of the page</a>.
+      Details like exact model names and prices change fast; always confirm against official docs.</p>
+  </div>
+
+  <p class="muted">📅 Snapshot last updated: <b>July 2026</b></p>
+
+  <section id="themes">
+    <h2>The big themes right now (mid-2026)</h2>
+
+    <div class="timeline">
+
+      <div class="tl-item big">
+        <div class="tl-date">Theme · Models</div>
+        <h3>Releases got faster — and much cheaper</h3>
+        <div class="card">
+          <p>2026 has been the most compressed release cycle yet: multiple frontier models from Anthropic
+            (<b>Claude Opus 4.x</b>, <b>Sonnet 5</b>), OpenAI (<b>GPT-5.x</b>), and Google (<b>Gemini 3.x</b>) in a
+            single spring, plus strong models from xAI and Chinese labs. Prices have fallen roughly <b>30–60%</b>
+            versus 2025.</p>
+          <p><b>Why it matters to you:</b> don't over-invest in one model's name. Pick the current best for your task,
+            and expect “yesterday's premium model” to be cheap or free soon. The <a href="fundamentals.html#choose">
+            prompt → RAG → fine-tune</a> logic hasn't changed — only the price tags.</p>
+        </div>
+      </div>
+
+      <div class="tl-item big">
+        <div class="tl-date">Theme · Agents</div>
+        <h3>Agents now run for minutes to hours — not just one reply</h3>
+        <div class="card">
+          <p>The defining shift of the year: coding agents moved from short prompt-and-response help to <b>long
+            autonomous runs</b> that plan, edit many files, run commands, check their own work, and keep going.
+            Tools like Claude Code, Cursor, GitHub Copilot, Codex, and Cline all matured into daily drivers.</p>
+          <p><b>Why it matters to you:</b> this is the <a href="fundamentals.html#agents">agent loop</a> in production.
+            Great for whole tasks — but the review habit matters more than ever. Work on a branch, read the diff,
+            run the tests.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">Theme · Tools</div>
+        <h3>“Agent-first” IDEs and multiple parallel agents</h3>
+        <p>New editors are built around <b>dispatching agents</b> rather than typing with autocomplete — you hand off
+          several tasks at once and review the results (some even record a video of what they did). <b>Takeaway:</b>
+          the editor is becoming a place you <i>delegate</i> to, not only type in. See <a href="tools.html">Tools &amp;
+          Workflows</a> for how to slot these into a healthy workflow.</p>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">Theme · Plumbing</div>
+        <h3>MCP became the default way to connect tools</h3>
+        <p>The <a href="tools.html#mcp">Model Context Protocol</a> — the “USB-C for AI” — is now widely supported, so
+          connecting an assistant to GitHub, a database, or your files is increasingly plug-and-play instead of a
+          custom integration each time.</p>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">Theme · Multimodal</div>
+        <h3>Image, video, and voice generation keep getting better &amp; cheaper</h3>
+        <p>Fast, low-cost image and video models and real-time voice/screen conversations are now routine.
+          <b>Takeaway:</b> “talk to it, show it a screenshot, get a diagram back” is normal — see
+          <a href="fundamentals.html#multimodal">Multimodal</a>.</p>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">Theme · Policy</div>
+        <h3>Regulation is taking shape</h3>
+        <p>Governments are moving from talk to rules — a US federal AI framework (mid-2026) and the EU AI Act's
+          compliance requirements among them. <b>Why it matters to you:</b> especially at work, expect clearer
+          policies on which tools are approved and what data may be shared. When in doubt, check
+          <a href="apply.html#work">your workplace's rules</a> first.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="keep-up">
+    <h2>Keep up in real time</h2>
+    <p>When you want fresher-than-this-snapshot news, these are good, high-signal places to look:</p>
+    <div class="grid two">
+      <div class="card">
+        <h3>📢 Straight from the source</h3>
+        <ul>
+          <li><a href="https://www.anthropic.com/news" rel="noopener">Anthropic news</a></li>
+          <li><a href="https://openai.com/news/" rel="noopener">OpenAI news</a></li>
+          <li><a href="https://blog.google/technology/ai/" rel="noopener">Google AI blog</a></li>
+          <li><a href="https://github.blog/" rel="noopener">GitHub blog (Copilot)</a></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🗞️ Roundups &amp; trackers</h3>
+        <ul>
+          <li><a href="https://www.crescendo.ai/news/latest-ai-news-and-updates" rel="noopener">Crescendo — latest AI news</a></li>
+          <li><a href="https://llm-stats.com/llm-updates" rel="noopener">LLM-Stats — model release tracker</a></li>
+          <li><a href="https://news.microsoft.com/source/features/ai/whats-next-in-ai-7-trends-to-watch-in-2026/" rel="noopener">Microsoft — trends to watch</a></li>
+          <li><a href="https://www.infoworld.com/article/4108092/6-ai-breakthroughs-that-will-define-2026.html" rel="noopener">InfoWorld — 2026 breakthroughs</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout tip">
+      <span class="tag">✅ Tip</span>
+      <p>You don't have to read all of it. Skim for which <i>category</i> a story fits (model, agent, tool, policy) —
+        this site already taught you those boxes, so each new headline just updates a box you understand.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>A personal learning hub by Julia Sheehan · <a href="https://github.com/juliamsheehan/juliamsheehan.github.io">source on GitHub</a></p>
+  <p class="muted">Latest News snapshot updated July 2026. AI moves fast — check the linked sources for anything newer.</p>
+</footer>
+
+</body>
+</html>

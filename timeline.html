@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Timeline of Big Updates — AI × Coding</title>
+<meta name="description" content="A plain-English timeline of the AI milestones that matter: the Transformer, GPT, ChatGPT, RAG, multimodal, reasoning models, and the rise of agents." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>" />
+<link rel="stylesheet" href="assets/style.css" />
+<script src="assets/hub.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="index.html">🤖 <span>AI × Coding</span></a>
+  <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">☰</button>
+  <nav class="site-nav">
+    <a href="index.html">Home</a>
+    <a href="fundamentals.html">Fundamentals</a>
+    <a href="timeline.html">Timeline</a>
+    <a href="news.html">Latest News</a>
+    <a href="apply.html">Apply to Coding</a>
+    <a href="tools.html">Tools &amp; Workflows</a>
+    <a href="glossary.html">Glossary</a>
+    <a class="ext" href="game/">🎮 Game Lab</a>
+    <button class="theme-toggle" aria-label="Toggle light/dark theme">🌙</button>
+  </nav>
+</header>
+
+<main>
+  <h1>🗓️ Timeline of Big Updates</h1>
+  <p class="lead" style="font-size:1.1rem;color:var(--ink-soft)">The reason AI feels like it's changing weekly: a lot
+    genuinely did happen fast. Here's the through-line, with the moments that actually mattered marked as
+    <span class="pill">milestone</span>. Blue dots are the era-defining ones.</p>
+
+  <div class="callout plain">
+    <span class="tag">💡 In plain English</span>
+    <p>The story in one sentence: a 2017 research idea (the <b>Transformer</b>) made models scale, scaling made them
+      shockingly capable, <b>ChatGPT</b> (2022) put that in everyone's hands, and by 2024–2025 we stopped just
+      <i>chatting</i> with models and started letting them <b>act</b> — that's the <b>agent</b> era we're in now.</p>
+  </div>
+
+  <div class="timeline">
+
+    <div class="tl-item">
+      <div class="tl-date">Before 2017</div>
+      <h3>Hand-written rules &amp; early machine learning</h3>
+      <p>Software “intelligence” meant rules people coded by hand, plus narrow ML for things like spam filters and
+        recommendations. Useful, but nothing that felt like it understood language.</p>
+    </div>
+
+    <div class="tl-item big">
+      <div class="tl-date">2017 · <span class="pill">milestone</span></div>
+      <h3>The Transformer — “Attention Is All You Need”</h3>
+      <div class="card">
+        <p>A Google research paper introduced the <b>Transformer</b>, an architecture that reads a whole sequence at
+          once and learns which words to pay <b>attention</b> to. It was fast to train at scale — and it quietly became
+          the foundation of every major model since. The “<b>GPT</b>” in ChatGPT stands for <b>Generative
+          Pre-trained Transformer</b>.</p>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-date">2018 – 2019</div>
+      <h3>BERT &amp; GPT-2 — scaling starts to pay off</h3>
+      <p>Researchers showed that pre-training a Transformer on huge text, then adapting it, beat everything before it.
+        GPT-2 wrote paragraphs coherent enough that its release was staged out of caution. The recipe was now clear:
+        <b>make it bigger, feed it more.</b></p>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-date">2020</div>
+      <h3>GPT-3 — big enough to be surprising</h3>
+      <p>With 175 billion parameters, GPT-3 could write code, essays, and emails from a plain instruction, and learn a
+        task from a couple of examples in the prompt (<b>few-shot</b>). Developers got API access and the first wave of
+        “AI wrapper” apps appeared.</p>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-date">2021</div>
+      <h3>GitHub Copilot — AI enters the editor</h3>
+      <p>Built on an OpenAI code model, <b>Copilot</b> put grey “ghost-text” autocomplete right in the IDE. For many
+        developers this was the first genuinely useful AI in daily work: press <kbd>Tab</kbd>, accept a suggestion,
+        keep going.</p>
+    </div>
+
+    <div class="tl-item big">
+      <div class="tl-date">Nov 2022 · <span class="pill">milestone</span></div>
+      <h3>ChatGPT — the moment everyone noticed</h3>
+      <div class="card">
+        <p>OpenAI wrapped a fine-tuned GPT-3.5 in a simple chat box. The <b>conversation</b> format + <b>RLHF</b> tuning
+          made it feel helpful and safe, and it reached 100 million users faster than any app in history. This is the
+          moment AI went from “researcher toy” to “thing your relatives ask you about.”</p>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-date">2023</div>
+      <h3>GPT-4, open models &amp; the RAG boom</h3>
+      <p>A dense year:</p>
+      <ul>
+        <li><b>GPT-4</b> and rivals (Anthropic's Claude, Google's Bard/Gemini) raised the quality bar and started
+          accepting images.</li>
+        <li><b>Open-weight models</b> (Meta's <b>Llama 2</b>, Mistral) let anyone run capable models themselves.</li>
+        <li><b>RAG</b> and vector databases exploded as the practical way to put private data to work.</li>
+        <li><b>Function calling</b> arrived — models could now trigger real tools, the seed of agents.</li>
+      </ul>
+    </div>
+
+    <div class="tl-item big">
+      <div class="tl-date">2024 · <span class="pill">milestone</span></div>
+      <h3>The year of agents (and much bigger context)</h3>
+      <div class="card">
+        <p>Tool use matured into <b>agents</b> — models running in a loop to complete multi-step tasks on their own.
+          The buzz was everywhere; “agentic” became <i>the</i> word of the year.</p>
+        <ul>
+          <li><b>Coding agents</b> arrived: tools like Cursor, Devin, and agent modes that edit many files, run code,
+            and fix their own errors — not just autocomplete a line.</li>
+          <li><b>Context windows</b> jumped to hundreds of thousands, then a million+ tokens — paste a whole codebase.</li>
+          <li>Models got <b>faster and cheaper</b>, and small ones ran on laptops and phones.</li>
+          <li><b>Multimodal</b> went mainstream: talk to your AI, share your screen, get voice back.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tl-item big">
+      <div class="tl-date">2025 · <span class="pill">milestone</span></div>
+      <h3>Reasoning models &amp; agents become normal tooling</h3>
+      <div class="card">
+        <p>Agents moved from demo to daily driver, and two ideas standardized the ecosystem:</p>
+        <ul>
+          <li><b>Reasoning models</b> (“think before answering”) became a standard option, tackling hard debugging,
+            math, and planning far better.</li>
+          <li><b>Agentic coding in the terminal &amp; IDE</b> (e.g. Claude Code, Cursor's agent, Copilot agents) — you
+            hand over a goal and review the result, working in git.</li>
+          <li><b>MCP (Model Context Protocol)</b> emerged as a common “USB-C port” standard for connecting models to
+            tools and data sources, so integrations stopped being one-off.</li>
+          <li><b>Computer use</b> — agents that click and type in a real screen — went from experiment to early product.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-date">2026 · you are here</div>
+      <h3>Agents as coworkers, focus on trust</h3>
+      <p>The frontier now is less “can it?” and more “can I <b>trust</b> and <b>direct</b> it?” Themes to watch:
+        multiple agents collaborating, longer autonomous tasks, tighter permission controls and audit trails, and
+        stronger on-device models for privacy. The core skills for you haven't changed: <b>give good context, keep a
+        human in the loop, and verify the output.</b></p>
+    </div>
+
+  </div>
+
+  <div class="callout tip">
+    <span class="tag">✅ Tip</span>
+    <p>You don't need to chase every release. The <i>categories</i> here (chat → RAG → tools → agents → reasoning)
+      change slowly; only the model names and scores change fast. Learn the categories once — this site — and each new
+      announcement just slots into a box you already understand.</p>
+  </div>
+
+  <p class="center"><a class="btn" href="apply.html">See how to use all this → Apply to Coding</a></p>
+
+</main>
+
+<footer class="site-footer">
+  <p>A personal learning hub by Julia Sheehan · <a href="https://github.com/juliamsheehan/juliamsheehan.github.io">source on GitHub</a></p>
+  <p class="muted">Last reviewed July 2026. AI moves fast — check the linked official docs for the latest specifics.</p>
+</footer>
+
+</body>
+</html>

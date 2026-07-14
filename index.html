@@ -3,315 +3,174 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Game Design Lab · Make a Game That Does Good!</title>
-<meta name="description" content="A hands-on lab for the Digital Game Design badge. Plan, build, code, test, and share your very own game!" />
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>" />
-<link rel="stylesheet" href="css/styles.css" />
+<title>AI × Coding — A Beginner's Learning Hub</title>
+<meta name="description" content="A friendly, up-to-date home base for understanding AI concepts and applying them to real coding — for work and personal projects." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>" />
+<link rel="stylesheet" href="assets/style.css" />
+<script src="assets/hub.js"></script>
 </head>
 <body>
 
-<!-- ============ HEADER ============ -->
-<header class="topbar">
-  <div class="brand">🎮 <span>Game Design Lab</span></div>
-  <nav class="steps" id="steps">
-    <button class="step" data-go="step1"><span class="num">1</span> Games for Good</button>
-    <button class="step" data-go="step2"><span class="num">2</span> Coding Tools</button>
-    <button class="step" data-go="build" data-tab="world"><span class="num">3</span> Plan &amp; Build</button>
-    <button class="step" data-go="build" data-tab="play"><span class="num">4</span> Test</button>
-    <button class="step" data-go="step5"><span class="num">5</span> Share</button>
+<header class="site-header">
+  <a class="logo" href="index.html">🤖 <span>AI × Coding</span></a>
+  <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">☰</button>
+  <nav class="site-nav">
+    <a href="index.html">Home</a>
+    <a href="fundamentals.html">Fundamentals</a>
+    <a href="timeline.html">Timeline</a>
+    <a href="news.html">Latest News</a>
+    <a href="apply.html">Apply to Coding</a>
+    <a href="tools.html">Tools &amp; Workflows</a>
+    <a href="glossary.html">Glossary</a>
+    <a class="ext" href="game/">🎮 Game Lab</a>
+    <button class="theme-toggle" aria-label="Toggle light/dark theme">🌙</button>
   </nav>
 </header>
 
-<!-- floating helper messages -->
-<div id="toast" class="toast"></div>
+<main>
 
-<main id="main">
+  <section class="hero">
+    <span class="eyebrow">Your AI cheat sheet · updated for 2026</span>
+    <h1>Understand AI. Then <em>use</em> it in your code.</h1>
+    <p class="lead">Everything about AI seems to change every week, and it's scattered across a
+      hundred blog posts. This is <b>one calm place</b> to learn the core ideas in plain English —
+      and turn them into things you actually do when you code, at work and for fun.</p>
+    <p>
+      <a class="btn" href="fundamentals.html">Start with the basics →</a>
+      <a class="btn ghost" href="apply.html">Jump to “Apply to Coding”</a>
+    </p>
+  </section>
 
-  <!-- ============ WELCOME ============ -->
-  <section class="screen active" id="screen-welcome">
-    <div class="hero-card">
-      <div class="pip">🦊</div>
-      <h1>Make a game that does <span class="rainbow">GOOD</span>!</h1>
-      <p class="lead">Hi! I'm <b>Pip</b>. Today <b>you</b> are the game designer. You'll
-        <b>plan</b>, <b>build</b>, <b>code</b>, <b>test</b>, and <b>share</b> your very own video game —
-        and earn your <b>Digital Game Design</b> badge. 🏅</p>
-      <div class="path">
-        <span>1 · Games for Good</span><span>→</span>
-        <span>2 · Coding Tools</span><span>→</span>
-        <span>3 · Plan &amp; Build</span><span>→</span>
-        <span>4 · Test</span><span>→</span>
-        <span>5 · Share</span>
-      </div>
-      <button class="big-btn" data-go="step1">Let's go! ✨</button>
-      <p class="tiny">Grown-up helper? See the <a href="FACILITATOR-GUIDE.md">1-hour guide</a>.</p>
+  <!-- How to read this site -->
+  <section id="legend">
+    <h2>How this site is written</h2>
+    <p>Concepts are short. Wherever it helps, you'll see one of these colored boxes:</p>
+    <div class="callout plain">
+      <span class="tag">💡 In plain English</span>
+      <p>The no-jargon version. If you only read one thing, read this.</p>
+    </div>
+    <div class="callout example">
+      <span class="tag">🔍 Example</span>
+      <p>A concrete, everyday example so the idea sticks.</p>
+    </div>
+    <div class="callout tip">
+      <span class="tag">✅ Tip</span>
+      <p>A small habit or shortcut worth adopting.</p>
+    </div>
+    <div class="callout watch">
+      <span class="tag">⚠️ Watch out</span>
+      <p>A common trap, limitation, or safety note.</p>
+    </div>
+    <p>And for “when do I actually use this?”, look for green/amber <b>If → Then</b> cards:</p>
+    <div class="ifthen">
+      <div class="if"><span class="lbl">If</span> you're not sure a concept applies to your situation…</div>
+      <div class="arrow">→</div>
+      <div class="then"><span class="lbl">Then</span> the card tells you exactly what to do about it.</div>
     </div>
   </section>
 
-  <!-- ============ STEP 1 ============ -->
-  <section class="screen" id="screen-step1">
-    <div class="card">
-      <h2><span class="badge-num">1</span> Games for Good</h2>
-      <p>You learned how computers helped astronauts land on the moon. Did you know <b>games help people, too?</b></p>
-      <div class="examples">
-        <div class="ex">🧑‍⚕️<span>Doctors &amp; nurses practice on virtual patients</span></div>
-        <div class="ex">✈️<span>Pilots train in a pretend cockpit</span></div>
-        <div class="ex">🚀<span>Visit the Space Station</span></div>
-        <div class="ex">🌊<span>Dive to the deep ocean</span></div>
-        <div class="ex">🏛️<span>Explore ancient cities</span></div>
-      </div>
-      <div class="think">
-        <b>💭 Think:</b> What could <i>your</i> game teach someone, or what problem could it help solve?
-        <textarea id="reflection" rows="2" placeholder="My game idea helps with..."></textarea>
-      </div>
-
-      <h3>🌟 Pick your mission</h3>
-      <p class="muted">Every game here helps in a different way. Choose one to start (you can change it later).</p>
-      <div class="missions" id="mission-cards"></div>
-
-      <div class="nav">
-        <button class="ghost" data-go="welcome">← Back</button>
-        <button class="big-btn" data-go="step2">Next: Coding Tools →</button>
-      </div>
+  <!-- Section cards -->
+  <section id="explore">
+    <h2>Where do you want to go?</h2>
+    <div class="grid two">
+      <a class="card" href="fundamentals.html">
+        <div class="ico">🧱</div>
+        <h3>Fundamentals</h3>
+        <p>What an LLM, token, prompt, context window, embedding, RAG, and agent actually
+          <i>are</i> — beginner level, with diagrams.</p>
+        <span class="more">Learn the building blocks →</span>
+      </a>
+      <a class="card" href="timeline.html">
+        <div class="ico">🗓️</div>
+        <h3>Timeline of Big Updates</h3>
+        <p>From the Transformer to ChatGPT to the year agents took over. What changed, when,
+          and why it mattered.</p>
+        <span class="more">See how we got here →</span>
+      </a>
+      <a class="card" href="news.html">
+        <div class="ico">📰</div>
+        <h3>Latest News</h3>
+        <p>A periodic, plain-English snapshot of what's changing in AI right now — models, agents,
+          tools, and policy — plus where to follow live.</p>
+        <span class="more">Catch up on what's new →</span>
+      </a>
+      <a class="card" href="apply.html">
+        <div class="ico">🛠️</div>
+        <h3>Apply it to Coding</h3>
+        <p>Concrete workflows for your job and side projects: autocomplete, chat, agents,
+          reviews, tests, and <em>If → Then</em> guides for picking one.</p>
+        <span class="more">Put it to work →</span>
+      </a>
+      <a class="card" href="tools.html">
+        <div class="ico">🧰</div>
+        <h3>Tools &amp; Workflows</h3>
+        <p>The categories of AI coding tools, how they differ, what MCP is, and repeatable
+          workflow patterns that keep quality high.</p>
+        <span class="more">Compare the options →</span>
+      </a>
+      <a class="card" href="glossary.html">
+        <div class="ico">📖</div>
+        <h3>Glossary &amp; Links</h3>
+        <p>Every term on this site defined in one line, with a search box — plus trustworthy
+          places to keep learning.</p>
+        <span class="more">Look something up →</span>
+      </a>
+      <a class="card" href="game/">
+        <div class="ico">🎮</div>
+        <h3>Game Design Lab</h3>
+        <p>The interactive coding lab that used to live here. Still runs — plan, build, code,
+          and share a little game.</p>
+        <span class="more">Go play →</span>
+      </a>
     </div>
   </section>
 
-  <!-- ============ STEP 2 ============ -->
-  <section class="screen" id="screen-step2">
-    <div class="card">
-      <h2><span class="badge-num">2</span> Your Coding Tools</h2>
-      <p>You already know these three coding ideas. Game makers use them all the time — and so will you!
-        Press <b>Try it</b> on each one. 👇</p>
-
-      <div class="demo-grid">
-        <div class="demo">
-          <h3>➡️ Sequence</h3>
-          <p>One step after another, <b>in order</b>.</p>
-          <div class="demo-track" id="seq-track"></div>
-          <button class="mini-btn" id="seq-btn">Try it ▶</button>
-          <p class="demo-note">Program: step → step → step</p>
-        </div>
-
-        <div class="demo">
-          <h3>🔁 Loop</h3>
-          <p>Do something <b>again and again</b> without writing it a bunch of times.</p>
-          <div class="demo-track" id="loop-track"></div>
-          <button class="mini-btn" id="loop-btn">Try it ▶</button>
-          <p class="demo-note">Program: Repeat 4 times → step</p>
-        </div>
-
-        <div class="demo">
-          <h3>🔀 Conditional</h3>
-          <p><b>IF</b> something is true, <b>THEN</b> do this.</p>
-          <div class="demo-cond" id="cond-stage">
-            <span id="cond-key">🔑</span><span id="cond-door">🚪</span>
-          </div>
-          <button class="mini-btn" id="cond-btn">Pick up the key 🔑</button>
-          <p class="demo-note">Program: IF I have the key, THEN the door opens</p>
-        </div>
+  <!-- AI in one minute -->
+  <section id="one-minute">
+    <h2>AI in one minute (the mental model)</h2>
+    <p>If you remember just one picture, make it this one. Today's AI coding tools are all
+      built on the same core idea:</p>
+    <div class="callout plain">
+      <span class="tag">💡 In plain English</span>
+      <p>A <b>large language model (LLM)</b> is a very good <b>“predict the next word”</b> machine.
+        It read a huge chunk of the internet and learned the patterns in language and code. You give it
+        text (a <b>prompt</b>); it continues that text one piece at a time, guessing what's most likely to
+        come next. That's it. Everything else — chat, coding assistants, agents — is that engine
+        wrapped in clever plumbing.</p>
+    </div>
+    <div class="grid three">
+      <div class="card">
+        <div class="ico">1️⃣</div>
+        <h3>It predicts</h3>
+        <p>It doesn't “look things up” or “know” — it produces the most likely next text based on
+          patterns. Great at language and code, but it can be confidently wrong.</p>
       </div>
-
-      <div class="tipbox">
-        <b>🦊 Pip says:</b> In your game, your moves are a <b>sequence</b>, a countdown timer is a
-        <b>loop</b>, and a rule like “IF I touch a gem, THEN +1 point” is a <b>conditional</b>. You'll build all three!
+      <div class="card">
+        <div class="ico">2️⃣</div>
+        <h3>Context is everything</h3>
+        <p>It only knows what's in front of it right now (your prompt + files you share). Give it
+          the right context and it gets dramatically better.</p>
       </div>
-
-      <div class="nav">
-        <button class="ghost" data-go="step1">← Back</button>
-        <button class="big-btn" data-go="build" data-tab="world">Next: Build my game →</button>
+      <div class="card">
+        <div class="ico">3️⃣</div>
+        <h3>You stay the pilot</h3>
+        <p>It's a fast, tireless assistant — not an authority. You review, test, and decide. Trust,
+          but verify.</p>
       </div>
     </div>
-  </section>
-
-  <!-- ============ BUILD (Steps 3 & 4) ============ -->
-  <section class="screen" id="screen-build">
-    <div class="tabs">
-      <button class="tab active" data-tab="world">🎨 1. Build your World</button>
-      <button class="tab" data-tab="brain">🧠 2. Code the Brain</button>
-      <button class="tab" data-tab="play">🎮 3. Play &amp; Test</button>
-    </div>
-
-    <!-- WORLD -->
-    <div class="tabpanel active" id="panel-world">
-      <div class="panel-head">
-        <div>
-          <h2><span class="badge-num">3</span> Build your World</h2>
-          <p class="muted">Design your level: drop a tool, then click (or drag) on the grid to place it.</p>
-        </div>
-        <div class="head-right">
-          <label class="namelbl">Game name:
-            <input id="game-name" type="text" maxlength="28" placeholder="My Amazing Game" />
-          </label>
-          <div class="mission-chip" id="mission-chip"></div>
-          <button class="ghost small" id="change-mission">Change mission</button>
-        </div>
-      </div>
-
-      <div class="world-layout">
-        <div class="toolbox" id="toolbox"></div>
-        <div class="stage-slot" id="world-stage-slot"></div>
-        <div class="world-help">
-          <h4>How to build</h4>
-          <ol>
-            <li>Place <b>1 hero start</b> and <b>1 goal</b> (you need both!).</li>
-            <li>Add <b>walls</b> to make a path, and <b>gems</b> to collect.</li>
-            <li>Try a <b>key</b> + <b>door</b> (the door opens only if you grabbed a key — a conditional!).</li>
-            <li>Add <b>hazards</b> to dodge.</li>
-          </ol>
-          <div class="world-tools-extra">
-            <button class="ghost small" id="add-border">⬛ Add wall border</button>
-            <button class="ghost small danger" id="clear-world">🗑️ Clear all</button>
-          </div>
-          <p class="warn" id="world-warn"></p>
-        </div>
-      </div>
-
-      <div class="nav">
-        <button class="ghost" data-go="step2">← Back</button>
-        <button class="big-btn" data-tab="brain">Next: Code the Brain →</button>
-      </div>
-    </div>
-
-    <!-- BRAIN -->
-    <div class="tabpanel" id="panel-brain">
-      <div class="panel-head">
-        <div>
-          <h2><span class="badge-num">3</span> Code the Brain 🧠</h2>
-          <p class="muted">Give your game its rules! Drag blocks (or click a hat then a block) to build
-            sequences, loops, and conditionals.</p>
-        </div>
-      </div>
-      <div id="coder-root"></div>
-      <div class="nav">
-        <button class="ghost" data-tab="world">← Back to World</button>
-        <button class="big-btn" data-tab="play">Next: Play &amp; Test →</button>
-      </div>
-    </div>
-
-    <!-- PLAY -->
-    <div class="tabpanel" id="panel-play">
-      <div class="panel-head">
-        <div>
-          <h2><span class="badge-num">4</span> Play &amp; Test 🎮</h2>
-          <p class="muted">Move with the <b>arrow keys</b> (or the buttons). Does your code work the way you planned?
-            If not — that's a bug to fix. Real designers try, try again! 💪</p>
-        </div>
-      </div>
-
-      <div class="play-layout">
-        <div class="hud" id="hud"></div>
-        <div class="stage-slot play-stage" id="play-stage-slot"></div>
-        <div class="play-side">
-          <div class="dpad">
-            <button data-dir="up">▲</button>
-            <div class="dpad-mid">
-              <button data-dir="left">◀</button>
-              <button data-dir="down">▼</button>
-              <button data-dir="right">▶</button>
-            </div>
-          </div>
-          <button class="ghost small" id="restart-btn">🔄 Restart level</button>
-          <div class="coach" id="coach"></div>
-        </div>
-      </div>
-
-      <div class="nav">
-        <button class="ghost" data-tab="brain">← Fix my code</button>
-        <button class="ghost" data-tab="world">✏️ Edit my world</button>
-        <button class="big-btn" data-go="step5">I love it! Share →</button>
-      </div>
-
-      <!-- win / lose overlay -->
-      <div class="overlay" id="result-overlay">
-        <div class="result-card" id="result-card"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ STEP 5 ============ -->
-  <section class="screen" id="screen-step5">
-    <div class="card">
-      <h2><span class="badge-num">5</span> Share &amp; Improve</h2>
-      <p>The best part of finishing a project is <b>sharing</b> it! Send your game to a friend, watch them play,
-        and listen to their ideas. 🎉</p>
-
-      <div class="share-box">
-        <h3>🔗 Your game link</h3>
-        <p class="muted">Anyone who opens this link can play <b>your</b> game — no download needed.</p>
-        <div class="share-row">
-          <input id="share-link" type="text" readonly />
-          <button class="mini-btn" id="copy-link">Copy</button>
-        </div>
-      </div>
-
-      <div class="two-col">
-        <div class="improve">
-          <h3>🧪 Play-test with a friend</h3>
-          <p>Watch a friend play and ask:</p>
-          <ul>
-            <li>Was it fun? Too easy or too hard?</li>
-            <li>Did anything not work the way you expected?</li>
-            <li>What's one thing that would make it better?</li>
-          </ul>
-          <label>✏️ One thing I'll improve next time:
-            <textarea id="improve-note" rows="2" placeholder="Next, I will..."></textarea>
-          </label>
-          <button class="ghost" data-go="build" data-tab="world">← Go improve my game</button>
-        </div>
-
-        <div class="service">
-          <h3>💖 Give service</h3>
-          <p>Now that you've earned your badge, you can:</p>
-          <ul>
-            <li>Show family how games help science &amp; health research.</li>
-            <li>Teach a friend the game design process.</li>
-            <li>Cheer someone on to <b>persevere</b> when learning is hard.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="cert-area">
-        <h3>🏅 Your badge certificate</h3>
-        <div class="cert" id="cert">
-          <div class="cert-in">
-            <div class="cert-top">Digital Game Design · Badge 2</div>
-            <div class="cert-game" id="cert-game">My Game</div>
-            <div class="cert-by">designed by</div>
-            <div class="cert-name" id="cert-name">a Game Designer</div>
-            <div class="cert-seal">🎮🏅✨</div>
-            <div class="cert-mission" id="cert-mission"></div>
-          </div>
-        </div>
-        <label class="namelbl big">Your name:
-          <input id="designer-name" type="text" maxlength="24" placeholder="Type your name" />
-        </label>
-        <button class="mini-btn" id="print-cert">🖨️ Print my certificate</button>
-      </div>
-
-      <div class="nav">
-        <button class="ghost" data-go="build" data-tab="play">← Back to my game</button>
-        <button class="big-btn celebrate" id="finish-btn">🎉 I earned my badge!</button>
-      </div>
+    <div class="ifthen">
+      <div class="if"><span class="lbl">If</span> you're brand new and want the ideas to click before anything else…</div>
+      <div class="arrow">→</div>
+      <div class="then"><span class="lbl">Then</span> read <a href="fundamentals.html">Fundamentals</a> top-to-bottom once. 15 minutes, and the rest of the AI world stops feeling like magic.</div>
     </div>
   </section>
 
 </main>
 
-<!-- mission picker modal -->
-<div class="overlay" id="mission-modal">
-  <div class="modal">
-    <h3>🌟 Choose your mission</h3>
-    <div class="missions" id="mission-cards-modal"></div>
-    <button class="ghost" id="mission-close">Close</button>
-  </div>
-</div>
+<footer class="site-footer">
+  <p>A personal learning hub by Julia Sheehan · <a href="https://github.com/juliamsheehan/juliamsheehan.github.io">source on GitHub</a></p>
+  <p class="muted">Last reviewed July 2026. AI moves fast — check the linked official docs for the latest specifics.</p>
+</footer>
 
-<!-- scripts: Phaser first, then our modules -->
-<script src="lib/phaser.min.js"></script>
-<script src="js/themes.js"></script>
-<script src="js/store.js"></script>
-<script src="js/share.js"></script>
-<script src="js/game.js"></script>
-<script src="js/coder.js"></script>
-<script src="js/main.js"></script>
 </body>
 </html>

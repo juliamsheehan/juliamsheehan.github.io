@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Glossary &amp; Links — AI × Coding</title>
+<meta name="description" content="Every AI term on this site defined in one line, with a search box — plus trustworthy places to keep learning." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>" />
+<link rel="stylesheet" href="assets/style.css" />
+<script src="assets/hub.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="index.html">🤖 <span>AI × Coding</span></a>
+  <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">☰</button>
+  <nav class="site-nav">
+    <a href="index.html">Home</a>
+    <a href="fundamentals.html">Fundamentals</a>
+    <a href="timeline.html">Timeline</a>
+    <a href="news.html">Latest News</a>
+    <a href="apply.html">Apply to Coding</a>
+    <a href="tools.html">Tools &amp; Workflows</a>
+    <a href="glossary.html">Glossary</a>
+    <a class="ext" href="game/">🎮 Game Lab</a>
+    <button class="theme-toggle" aria-label="Toggle light/dark theme">🌙</button>
+  </nav>
+</header>
+
+<main>
+  <h1>📖 Glossary &amp; Links</h1>
+  <p class="lead" style="font-size:1.1rem;color:var(--ink-soft)">One-line definitions for every term on this site.
+    Type to filter — it searches names <em>and</em> definitions.</p>
+
+  <input id="glossary-search" class="searchbar" type="search" placeholder="🔎 Search terms… (e.g. “token”, “agent”, “open book”)" aria-label="Search glossary" />
+  <p class="muted" id="glossary-count">37 terms</p>
+
+  <dl>
+    <div class="term"><dt>Agent</dt><dd>A model placed in a loop with tools and a goal — it plans, acts, observes the result, and repeats until done. See <a href="fundamentals.html#agents">Fundamentals</a>.</dd></div>
+    <div class="term"><dt>Agentic</dt><dd>Describes AI that acts on its own toward a goal (multi-step, tool-using) rather than answering a single question.</dd></div>
+    <div class="term"><dt>API (model API)</dt><dd>A way to call a model from your own code so you can build AI features into software.</dd></div>
+    <div class="term"><dt>Artificial Intelligence (AI)</dt><dd>The broad goal of getting machines to do things that seem intelligent.</dd></div>
+    <div class="term"><dt>Autocomplete (ghost text)</dt><dd>Grey inline suggestions in your editor that finish the current line or block; press Tab to accept.</dd></div>
+    <div class="term"><dt>Chain of thought</dt><dd>A model working through intermediate reasoning steps before giving a final answer; the basis of reasoning models.</dd></div>
+    <div class="term"><dt>Context window</dt><dd>The maximum amount of text (in tokens) a model can consider at once — its short-term memory. See <a href="fundamentals.html#context">Fundamentals</a>.</dd></div>
+    <div class="term"><dt>Deep learning</dt><dd>Machine learning using many-layered neural networks; strong on messy data like images and language.</dd></div>
+    <div class="term"><dt>Embedding</dt><dd>A list of numbers (a vector) that captures the <i>meaning</i> of a piece of text so similarity can be measured. See <a href="fundamentals.html#embeddings">Fundamentals</a>.</dd></div>
+    <div class="term"><dt>Few-shot prompting</dt><dd>Including a couple of example input→output pairs in your prompt so the model copies the pattern.</dd></div>
+    <div class="term"><dt>Fine-tuning</dt><dd>Extra training of a general model on narrower examples so it specializes in a style, format, or task.</dd></div>
+    <div class="term"><dt>Function calling</dt><dd>See <b>Tool use</b> — the model asks your software to run a function and uses the result.</dd></div>
+    <div class="term"><dt>GPT</dt><dd>Generative Pre-trained Transformer — a family of LLMs; also a common shorthand for that style of model.</dd></div>
+    <div class="term"><dt>Hallucination</dt><dd>When a model states something false with full confidence, because it produces likely-sounding text, not verified fact. See <a href="fundamentals.html#hallucination">Fundamentals</a>.</dd></div>
+    <div class="term"><dt>Inference</dt><dd>Running a trained model to get an answer (as opposed to training it). Every prompt you send is inference.</dd></div>
+    <div class="term"><dt>Knowledge cutoff</dt><dd>The date a model's training data stops; it won't reliably know newer events unless given the info.</dd></div>
+    <div class="term"><dt>LLM (Large Language Model)</dt><dd>A large neural network trained on text that predicts the next token; the engine behind today's AI assistants.</dd></div>
+    <div class="term"><dt>Local / on-device model</dt><dd>An open-weight model run on your own machine — private and offline, usually smaller than cloud models.</dd></div>
+    <div class="term"><dt>Machine learning (ML)</dt><dd>Getting programs to learn patterns from examples instead of being given hand-written rules.</dd></div>
+    <div class="term"><dt>MCP (Model Context Protocol)</dt><dd>A shared standard — the “USB-C for AI” — for connecting assistants to tools and data. See <a href="tools.html#mcp">Tools</a>.</dd></div>
+    <div class="term"><dt>Multimodal</dt><dd>A model that handles more than text — also images, audio, or video. See <a href="fundamentals.html#multimodal">Fundamentals</a>.</dd></div>
+    <div class="term"><dt>Neural network</dt><dd>A model loosely inspired by brain cells, made of layers of simple units that learn patterns from data.</dd></div>
+    <div class="term"><dt>Open-weight model</dt><dd>A model whose trained parameters are published, so anyone can download and run it (e.g. Llama, Mistral).</dd></div>
+    <div class="term"><dt>Parameters</dt><dd>The internal numbers a model learns during training; more parameters (billions) generally means more capacity.</dd></div>
+    <div class="term"><dt>Pre-training</dt><dd>The first, expensive stage where a model learns general patterns from a huge pile of text and code.</dd></div>
+    <div class="term"><dt>Prompt</dt><dd>The text you send a model. <b>Prompt engineering</b> is wording it well to get a better answer. See <a href="apply.html#prompting">Apply</a>.</dd></div>
+    <div class="term"><dt>RAG (Retrieval-Augmented Generation)</dt><dd>Fetching relevant documents and adding them to the prompt so the model answers from real sources — an “open-book exam.” See <a href="fundamentals.html#rag">Fundamentals</a>.</dd></div>
+    <div class="term"><dt>Reasoning model</dt><dd>A model trained to “think” through steps before answering; better at logic, math, and multi-step tasks. See <a href="fundamentals.html#reasoning">Fundamentals</a>.</dd></div>
+    <div class="term"><dt>RLHF</dt><dd>Reinforcement Learning from Human Feedback — tuning a model toward answers humans rate as helpful; what made assistants pleasant to use.</dd></div>
+    <div class="term"><dt>Semantic search</dt><dd>Search by meaning (using embeddings) rather than exact keywords, so related phrasing still matches.</dd></div>
+    <div class="term"><dt>System prompt</dt><dd>A standing, behind-the-scenes instruction that shapes every reply in a conversation.</dd></div>
+    <div class="term"><dt>Temperature</dt><dd>A dial for randomness: low = focused and repeatable, high = varied and creative. See <a href="fundamentals.html#temperature">Fundamentals</a>.</dd></div>
+    <div class="term"><dt>Token</dt><dd>A word-chunk the model reads and writes; ~¾ of a word in English. Pricing and context limits are counted in tokens. See <a href="fundamentals.html#tokens">Fundamentals</a>.</dd></div>
+    <div class="term"><dt>Tool use</dt><dd>Letting a model trigger real actions (run code, search, query a DB) and use the results; the foundation of agents. See <a href="fundamentals.html#tools">Fundamentals</a>.</dd></div>
+    <div class="term"><dt>Training</dt><dd>The process of adjusting a model's parameters from data so it gets better at predicting/answering.</dd></div>
+    <div class="term"><dt>Transformer</dt><dd>The 2017 neural-network architecture, built on “attention,” that underpins all modern LLMs. See <a href="timeline.html">Timeline</a>.</dd></div>
+    <div class="term"><dt>Vector database</dt><dd>A store optimized for embeddings, so you can quickly find the text closest in meaning to a query — the retrieval half of RAG.</dd></div>
+  </dl>
+
+  <section id="links">
+    <h2>Where to keep learning</h2>
+    <p>The web moves fast; these are stable, high-quality starting points. When a detail matters (pricing, limits, model
+      names), always confirm against the <b>official docs</b>.</p>
+    <div class="grid two">
+      <div class="card">
+        <h3>📚 Official model docs</h3>
+        <ul>
+          <li><a href="https://docs.claude.com/" rel="noopener">Anthropic (Claude) docs</a></li>
+          <li><a href="https://platform.openai.com/docs" rel="noopener">OpenAI docs</a></li>
+          <li><a href="https://ai.google.dev/" rel="noopener">Google AI (Gemini) docs</a></li>
+          <li><a href="https://modelcontextprotocol.io/" rel="noopener">Model Context Protocol (MCP)</a></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🧑‍💻 Coding-tool docs</h3>
+        <ul>
+          <li><a href="https://docs.claude.com/en/docs/claude-code/overview" rel="noopener">Claude Code</a></li>
+          <li><a href="https://docs.github.com/copilot" rel="noopener">GitHub Copilot</a></li>
+          <li><a href="https://docs.cursor.com/" rel="noopener">Cursor</a></li>
+          <li><a href="https://ollama.com/" rel="noopener">Ollama (run models locally)</a></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🎓 Free foundations</h3>
+        <ul>
+          <li><a href="https://www.elementsofai.com/" rel="noopener">Elements of AI (no-code intro)</a></li>
+          <li><a href="https://www.deeplearning.ai/short-courses/" rel="noopener">DeepLearning.AI short courses</a></li>
+          <li><a href="https://huggingface.co/learn" rel="noopener">Hugging Face courses</a></li>
+          <li><a href="https://jalammar.github.io/illustrated-transformer/" rel="noopener">The Illustrated Transformer</a></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🧭 Prompting &amp; practice</h3>
+        <ul>
+          <li><a href="https://www.promptingguide.ai/" rel="noopener">Prompt Engineering Guide</a></li>
+          <li><a href="https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview" rel="noopener">Anthropic prompting guide</a></li>
+          <li><a href="game/">This site's own Game Design Lab</a> — practice coding concepts hands-on</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout tip">
+      <span class="tag">✅ Tip</span>
+      <p>Bookmark this page as your home base. When a new tool or term shows up, look it up here first — if it fits a
+        category you already know, you're most of the way to understanding it.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>A personal learning hub by Julia Sheehan · <a href="https://github.com/juliamsheehan/juliamsheehan.github.io">source on GitHub</a></p>
+  <p class="muted">Last reviewed July 2026. AI moves fast — check the linked official docs for the latest specifics.</p>
+</footer>
+
+</body>
+</html>

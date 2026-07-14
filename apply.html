@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Apply it to Coding — AI × Coding</title>
+<meta name="description" content="Concrete, beginner-friendly ways to use AI when you code — for work and personal projects. Modes, If→Then decision guides, prompt recipes, and how to stay safe and verify." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>" />
+<link rel="stylesheet" href="assets/style.css" />
+<script src="assets/hub.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="index.html">🤖 <span>AI × Coding</span></a>
+  <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">☰</button>
+  <nav class="site-nav">
+    <a href="index.html">Home</a>
+    <a href="fundamentals.html">Fundamentals</a>
+    <a href="timeline.html">Timeline</a>
+    <a href="news.html">Latest News</a>
+    <a href="apply.html">Apply to Coding</a>
+    <a href="tools.html">Tools &amp; Workflows</a>
+    <a href="glossary.html">Glossary</a>
+    <a class="ext" href="game/">🎮 Game Lab</a>
+    <button class="theme-toggle" aria-label="Toggle light/dark theme">🌙</button>
+  </nav>
+</header>
+
+<main>
+  <h1>🛠️ Apply it to Coding</h1>
+  <p class="lead" style="font-size:1.1rem;color:var(--ink-soft)">The whole point. Below are the ways you'll actually use
+    AI while coding — at your job and on personal projects — with clear <em>If → Then</em> guidance on when to reach for
+    each, prompt recipes you can copy, and the habits that keep you out of trouble.</p>
+
+  <nav class="toc" aria-label="On this page">
+    <strong>On this page</strong>
+    <ul>
+      <li><a href="#modes">The 5 ways to use AI</a></li>
+      <li><a href="#pick">Which mode? (If → Then)</a></li>
+      <li><a href="#tasks">Everyday coding tasks</a></li>
+      <li><a href="#prompting">Prompting for code</a></li>
+      <li><a href="#verify">Trust &amp; verify</a></li>
+      <li><a href="#work">At work vs. personal</a></li>
+      <li><a href="#projects">Starter project ideas</a></li>
+    </ul>
+  </nav>
+
+  <!-- ===================== MODES ===================== -->
+  <section id="modes">
+    <h2>The 5 ways to use AI while coding</h2>
+    <p>Almost everything falls into one of these five modes, ordered from “lightest touch” to “most autonomous.”</p>
+    <div class="grid two">
+      <div class="card">
+        <div class="ico">⌨️</div>
+        <h3>1 · Autocomplete</h3>
+        <p>Grey “ghost text” finishes your line or block as you type. Press <kbd>Tab</kbd> to accept. Zero prompting.</p>
+        <p class="muted">Best for: the next line, boilerplate, repetitive edits.</p>
+      </div>
+      <div class="card">
+        <div class="ico">💬</div>
+        <h3>2 · Chat / ask</h3>
+        <p>A conversation in a sidebar or web app. You describe, it explains or drafts. You copy what's useful.</p>
+        <p class="muted">Best for: “how do I…”, explaining code, brainstorming, small snippets.</p>
+      </div>
+      <div class="card">
+        <div class="ico">✏️</div>
+        <h3>3 · Inline edit</h3>
+        <p>Select code, describe a change (“add error handling”), and it rewrites that selection in place.</p>
+        <p class="muted">Best for: targeted refactors, renames, adding tests to one file.</p>
+      </div>
+      <div class="card">
+        <div class="ico">🤖</div>
+        <h3>4 · Agent</h3>
+        <p>You give a goal; it reads files, makes multi-file changes, runs commands/tests, and fixes its own errors — then reports back.</p>
+        <p class="muted">Best for: whole features, migrations, “make the tests pass.”</p>
+      </div>
+      <div class="card">
+        <div class="ico">🔍</div>
+        <h3>5 · Review &amp; explain</h3>
+        <p>Point it at a diff, a file, or an unfamiliar repo and ask for a review, a summary, or a walkthrough.</p>
+        <p class="muted">Best for: code review, onboarding to a codebase, learning.</p>
+      </div>
+      <div class="card" style="border-style:dashed">
+        <div class="ico">🧭</div>
+        <h3>The mindset</h3>
+        <p>Same across all five: <b>you're the pilot, it's the copilot.</b> It drafts fast; you steer, review, and own
+          the result.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PICK ===================== -->
+  <section id="pick">
+    <h2>Which mode should I use?</h2>
+    <div class="ifthen">
+      <div class="if"><span class="lbl">If</span> you're mid-flow and just want the next line or some boilerplate…</div>
+      <div class="arrow">→</div>
+      <div class="then"><span class="lbl">Then</span> lean on <b>autocomplete</b>. Don't stop to write a prompt.</div>
+    </div>
+    <div class="ifthen">
+      <div class="if"><span class="lbl">If</span> you're unsure how to approach something or want a concept explained…</div>
+      <div class="arrow">→</div>
+      <div class="then"><span class="lbl">Then</span> use <b>chat</b>. Ask it to compare options and explain trade-offs before you write anything.</div>
+    </div>
+    <div class="ifthen">
+      <div class="if"><span class="lbl">If</span> the change is contained to a selection or a single file…</div>
+      <div class="arrow">→</div>
+      <div class="then"><span class="lbl">Then</span> use <b>inline edit</b> — fast, and easy to eyeball the result.</div>
+    </div>
+    <div class="ifthen">
+      <div class="if"><span class="lbl">If</span> the task spans several files or needs running/testing to get right…</div>
+      <div class="arrow">→</div>
+      <div class="then"><span class="lbl">Then</span> use an <b>agent</b> — but work on a branch and review the diff before merging.</div>
+    </div>
+    <div class="ifthen">
+      <div class="if"><span class="lbl">If</span> you're new to a codebase, or reviewing someone's PR…</div>
+      <div class="arrow">→</div>
+      <div class="then"><span class="lbl">Then</span> use <b>review/explain</b> mode to get a map and a second opinion — then confirm the important parts yourself.</div>
+    </div>
+    <div class="callout watch">
+      <span class="tag">⚠️ Watch out</span>
+      <p>Don't reach for an agent when a one-line autocomplete would do — you'll spend more time reviewing than you
+        saved. Match the tool's power to the task's size.</p>
+    </div>
+  </section>
+
+  <!-- ===================== TASKS ===================== -->
+  <section id="tasks">
+    <h2>Everyday coding tasks — and how AI helps</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Task</th><th>How AI helps</th><th>Good mode</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>Understand unfamiliar code</b></td><td>“Explain what this function does and why” — line-by-line or high level.</td><td>Chat / Explain</td></tr>
+          <tr><td><b>Write boilerplate</b></td><td>Config, DTOs, CRUD, repetitive patterns it has seen a thousand times.</td><td>Autocomplete / Inline</td></tr>
+          <tr><td><b>Debug an error</b></td><td>Paste the error + the code + what you expected; ask for the likely cause and fix.</td><td>Chat / Agent</td></tr>
+          <tr><td><b>Write tests</b></td><td>“Write unit tests for this, including edge cases and the empty/error paths.”</td><td>Inline / Agent</td></tr>
+          <tr><td><b>Refactor</b></td><td>“Extract this into smaller functions,” “rename for clarity,” “remove duplication.”</td><td>Inline / Agent</td></tr>
+          <tr><td><b>Translate languages</b></td><td>Port a snippet from Python to JavaScript, or SQL dialect A to B.</td><td>Chat / Inline</td></tr>
+          <tr><td><b>Write docs &amp; comments</b></td><td>Docstrings, READMEs, commit messages, changelogs from a diff.</td><td>Inline / Agent</td></tr>
+          <tr><td><b>Learn a new library</b></td><td>“Show me a minimal working example of X doing Y,” then ask follow-ups.</td><td>Chat</td></tr>
+          <tr><td><b>Review a change</b></td><td>“Review this diff for bugs, edge cases, and security issues.”</td><td>Review</td></tr>
+          <tr><td><b>Build a whole feature</b></td><td>Describe the behavior; let it plan, edit, and test across files.</td><td>Agent</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===================== PROMPTING ===================== -->
+  <section id="prompting">
+    <h2>Prompting for code (the part that pays off)</h2>
+    <p>The single biggest lever on quality is <b>context</b> — remember from <a href="fundamentals.html#context">Fundamentals</a>,
+      the model only knows what's in front of it. A vague ask gets a generic answer; a specific ask with context gets a
+      usable one.</p>
+
+    <h3>The recipe: Goal · Context · Constraints · Format</h3>
+    <div class="callout example">
+      <span class="tag">🔍 Example — before &amp; after</span>
+      <p><b>❌ Before:</b> “Write a function to validate email.”</p>
+      <p><b>✅ After:</b> “Write a <b>TypeScript</b> function <code>isValidEmail(input: string): boolean</code> for a
+        signup form. Use a simple, readable regex (no external libraries). Trim whitespace first, reject empty strings,
+        and add 3 unit tests including an invalid case. Return just the function and tests.”</p>
+    </div>
+    <p>Notice the four ingredients: the <b>goal</b> (validate email), the <b>context</b> (signup form, TypeScript), the
+      <b>constraints</b> (no libraries, readable), and the <b>format</b> (function + 3 tests, nothing else).</p>
+
+    <h3>Habits that consistently work</h3>
+    <ul>
+      <li><b>Give it the real code &amp; the real error.</b> Paste them; don't describe from memory.</li>
+      <li><b>State the stack &amp; versions.</b> “React 18, no Redux,” “Python 3.12,” — it changes the answer.</li>
+      <li><b>Ask for a plan first on big tasks.</b> “Outline the steps before writing code,” then approve or adjust.</li>
+      <li><b>Show an example</b> of the style/output you want (few-shot) when the task is fuzzy.</li>
+      <li><b>Iterate.</b> The first answer is a draft. “Good, now handle timeouts” beats re-writing the whole prompt.</li>
+      <li><b>Ask it to explain its choices</b> — you learn, and you catch bad assumptions.</li>
+    </ul>
+    <div class="callout tip">
+      <span class="tag">✅ Tip</span>
+      <p>Keep a personal note of prompts that worked well. “Write tests for X including edge cases and error paths” is
+        the kind of reusable recipe that saves you every week.</p>
+    </div>
+  </section>
+
+  <!-- ===================== VERIFY ===================== -->
+  <section id="verify">
+    <h2>Trust, but verify</h2>
+    <p>AI-generated code can be subtly wrong, out of date, or insecure while looking completely confident. The point
+      isn't to distrust it — it's to have a <b>habit</b> that catches the misses.</p>
+    <ul>
+      <li><b>Run it.</b> The compiler and your tests are honest reviewers that never get tired.</li>
+      <li><b>Read every line you ship.</b> If you don't understand it, ask it to explain — don't merge mystery code.</li>
+      <li><b>Check for made-up APIs.</b> Hallucinated function/library names are common; confirm they exist.</li>
+      <li><b>Mind security.</b> Watch for injected SQL, unvalidated input, hard-coded secrets, or outdated crypto.</li>
+      <li><b>Small steps.</b> Review changes in reviewable chunks, in version control, so you can undo cleanly.</li>
+    </ul>
+    <div class="callout watch">
+      <span class="tag">⚠️ Watch out</span>
+      <p><b>You own the code you commit</b> — not the AI. “The assistant wrote it” is never the explanation for a bug in
+        production. Treat its output like a pull request from a fast but junior teammate.</p>
+    </div>
+  </section>
+
+  <!-- ===================== WORK ===================== -->
+  <section id="work">
+    <h2>At work vs. personal projects</h2>
+    <div class="grid two">
+      <div class="card">
+        <h3>💼 At your job</h3>
+        <ul>
+          <li><b>Check the policy first.</b> Many workplaces have rules about which AI tools are approved and what data
+            may be shared. Follow them before anything here.</li>
+          <li><b>Don't paste secrets or sensitive data</b> — credentials, customer/PII data, proprietary code — into
+            tools that aren't approved for it. Assume anything you send may be stored.</li>
+          <li><b>Prefer approved/enterprise tools,</b> which usually promise not to train on your data and keep it in
+            your tenant.</li>
+          <li><b>Attribute &amp; review</b> per your team's norms; keep changes in code review as usual.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🏠 Personal use</h3>
+        <ul>
+          <li><b>Experiment freely.</b> Personal projects are the safest place to try agents and new tools end-to-end.</li>
+          <li><b>Use it to learn,</b> not just to finish — ask “why,” and read the explanations.</li>
+          <li><b>Still mind licenses &amp; secrets</b> if you'll publish the repo (no API keys in git!).</li>
+          <li><b>Build the muscle</b> of writing good prompts and reviewing output — it transfers straight to work.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout watch">
+      <span class="tag">⚠️ Watch out</span>
+      <p>This site is general guidance, not your employer's policy. When the two differ, <b>your workplace rules win.</b></p>
+    </div>
+  </section>
+
+  <!-- ===================== PROJECTS ===================== -->
+  <section id="projects">
+    <h2>Starter project ideas to practice on</h2>
+    <p>The fastest way to internalize all of this is to build something small with an AI assistant. A few low-stakes
+      ideas, roughly easiest first:</p>
+    <div class="grid two">
+      <div class="card">
+        <h3>🧰 A personal CLI tool</h3>
+        <p>Automate a chore — rename files, tidy downloads, summarize a folder of notes. Great for practicing the
+          <b>agent</b> loop end-to-end.</p>
+      </div>
+      <div class="card">
+        <h3>🌐 A one-page website</h3>
+        <p>Like this one! Static HTML/CSS/JS on GitHub Pages. Practice inline edits and “explain this” on your own code.</p>
+      </div>
+      <div class="card">
+        <h3>📄 A “chat with my docs” toy</h3>
+        <p>The classic <a href="fundamentals.html#rag">RAG</a> project: point a model at a few of your own PDFs/notes
+          and ask questions. Makes embeddings + retrieval click.</p>
+      </div>
+      <div class="card">
+        <h3>🧪 Add tests to old code</h3>
+        <p>Take a script you already have and ask AI to write a test suite for it. You'll learn testing <i>and</i>
+          verification habits at once.</p>
+      </div>
+    </div>
+    <hr />
+    <p class="center"><a class="btn" href="tools.html">Next: pick your tools → Tools &amp; Workflows</a></p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>A personal learning hub by Julia Sheehan · <a href="https://github.com/juliamsheehan/juliamsheehan.github.io">source on GitHub</a></p>
+  <p class="muted">Last reviewed July 2026. AI moves fast — check the linked official docs for the latest specifics.</p>
+</footer>
+
+</body>
+</html>
