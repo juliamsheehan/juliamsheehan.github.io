@@ -53,6 +53,12 @@
     </ul>
   </nav>
 
+  <div class="quiz-progress" data-quiz-progress hidden>
+    <span class="qp-label">Your score</span>
+  </div>
+  <p class="muted" style="margin-top:-.6rem;font-size:.9rem">Little <b>“Check your knowledge”</b> quizzes are sprinkled
+    through this page — answer them as you read and your score above fills in (and is remembered next time you visit).</p>
+
   <!-- ===================== NESTING ===================== -->
   <section id="nesting">
     <h2>AI vs Machine Learning vs LLM</h2>
@@ -112,6 +118,18 @@
       <p>Because it's predicting likely text (not fact-checking), it can produce answers that <i>sound</i> perfect but
         are wrong. That's called a <a href="#hallucination">hallucination</a> — always verify.</p>
     </div>
+
+    <div class="quiz" data-quiz data-quiz-id="fund-llm">
+      <p class="quiz-q"><span class="quiz-kicker">Check your knowledge</span>At its core, what is an LLM doing when it
+        answers you?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-opt" data-correct>Predicting the most likely next chunk of text, one piece at a time</button>
+        <button type="button" class="quiz-opt">Looking the answer up in a built-in database of facts</button>
+        <button type="button" class="quiz-opt">Running your code to see what's true</button>
+      </div>
+      <p class="quiz-explain">An LLM is a next-token predictor. It has no fact database and doesn't run code — which is
+        exactly why it can sound confident and still be wrong.</p>
+    </div>
   </section>
 
   <!-- ===================== TOKENS ===================== -->
@@ -124,6 +142,17 @@
       <li><code>unbelievable</code> → often 3 tokens (<code>un</code> · <code>believ</code> · <code>able</code>)</li>
       <li>Rough rule of thumb: <b>100 tokens ≈ 75 words</b>.</li>
     </ul>
+    <details class="reveal">
+      <summary>Show me a sentence split into tokens</summary>
+      <div class="reveal-body">
+        <p>Take <code>Tokenization isn't magic.</code> A model might see it as these 7 tokens:</p>
+        <p><code>Token</code> · <code>ization</code> · <code> Isn</code> · <code>'t</code> · <code> magic</code> ·
+          <code>.</code> — notice the leading spaces and the split of “Tokenization” into a common root plus a
+          suffix.</p>
+        <p class="muted">Common whole words are usually one token; rare or long words get chopped into pieces, and
+          punctuation and spaces count too. That's why word count and token count never line up exactly.</p>
+      </div>
+    </details>
     <div class="callout tip">
       <span class="tag">✅ Tip</span>
       <p>Tokens matter for two practical reasons: (1) API pricing is usually <b>per token</b>, and (2) every model has a
@@ -186,6 +215,18 @@
       <p>When a chat gets very long, early messages can fall out of the window and the model “forgets” them. Models can
         also lose focus with too much irrelevant text (“lost in the middle”). Start a fresh chat for a new task, and
         share only what's relevant.</p>
+    </div>
+
+    <div class="quiz" data-quiz data-quiz-id="fund-context">
+      <p class="quiz-q"><span class="quiz-kicker">Check your knowledge</span>Your chat has gone on for hours and the
+        model seems to have “forgotten” what you said at the start. Why?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-opt">The model got tired and needs a restart</button>
+        <button type="button" class="quiz-opt" data-correct>The earliest messages fell out of the context window — its limited short-term memory</button>
+        <button type="button" class="quiz-opt">It deleted the old messages to save you money</button>
+      </div>
+      <p class="quiz-explain">Everything has to fit inside the context window at once. In a long chat the oldest text
+        gets pushed out, so it's no longer “in view.” Starting a fresh chat for a new task is the fix.</p>
     </div>
   </section>
 
@@ -315,6 +356,18 @@
       <div class="arrow">→</div>
       <div class="then"><span class="lbl">Then</span> reach for RAG before you consider fine-tuning — it's cheaper, updatable, and easier to trust.</div>
     </div>
+
+    <div class="quiz" data-quiz data-quiz-id="fund-rag">
+      <p class="quiz-q"><span class="quiz-kicker">Check your knowledge</span>You want a model to answer questions about
+        <em>your team's internal wiki</em>, which it was never trained on. What's the first thing to try?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-opt">Fine-tune a model on the whole wiki</button>
+        <button type="button" class="quiz-opt" data-correct>Use RAG — retrieve the relevant wiki pages and add them to the prompt</button>
+        <button type="button" class="quiz-opt">Wait for the model maker to retrain on your data</button>
+      </div>
+      <p class="quiz-explain">RAG is the “open-book exam” approach: hand the model the exact pages at question time. It's
+        cheaper, instantly updatable, and can cite sources — reach for it before the far heavier fine-tuning.</p>
+    </div>
   </section>
 
   <!-- ===================== TOOL USE ===================== -->
@@ -394,6 +447,19 @@
       <p>More autonomy = more ways to go wrong. Agents can take real actions (edit files, run commands, spend money), so
         keep a human in the loop, work in version control, and review what they did before you ship it.</p>
     </div>
+
+    <div class="quiz" data-quiz data-quiz-id="fund-agents">
+      <p class="quiz-q"><span class="quiz-kicker">Check your knowledge</span>What's the key difference between plain
+        “tool use” and an <em>agent</em>?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-opt">An agent is just a faster model</button>
+        <button type="button" class="quiz-opt" data-correct>An agent runs in a loop — it plans, acts with tools, observes the result, and repeats until the goal is met</button>
+        <button type="button" class="quiz-opt">An agent never needs a human to review its work</button>
+      </div>
+      <p class="quiz-explain">Tool use lets a model take one action. An agent puts that in a loop with a goal:
+        think → act → observe → repeat. That autonomy is powerful, which is exactly why you keep a human reviewing the
+        result.</p>
+    </div>
   </section>
 
   <!-- ===================== CHOOSE ===================== -->
@@ -428,7 +494,7 @@
 
 <footer class="site-footer">
   <p>A personal learning hub by Julia Sheehan · <a href="https://github.com/juliamsheehan/juliamsheehan.github.io">source on GitHub</a></p>
-  <p class="muted">Last reviewed July 2026. AI moves fast — check the linked official docs for the latest specifics.</p>
+  <p class="muted">Last reviewed 14 July 2026. AI moves fast — check the linked official docs for the latest specifics.</p>
 </footer>
 
 </body>
