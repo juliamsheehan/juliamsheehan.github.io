@@ -46,6 +46,10 @@
     </ul>
   </nav>
 
+  <div class="quiz-progress" data-quiz-progress hidden>
+    <span class="qp-label">Your score</span>
+  </div>
+
   <!-- ===================== MODES ===================== -->
   <section id="modes">
     <h2>The 5 ways to use AI while coding</h2>
@@ -64,22 +68,22 @@
         <p class="muted">Best for: “how do I…”, explaining code, brainstorming, small snippets.</p>
       </div>
       <div class="card">
+        <div class="ico">🔍</div>
+        <h3>3 · Review &amp; explain</h3>
+        <p>Point it at a diff, a file, or an unfamiliar repo and ask for a review, a summary, or a walkthrough.</p>
+        <p class="muted">Best for: code review, onboarding to a codebase, learning.</p>
+      </div>
+      <div class="card">
         <div class="ico">✏️</div>
-        <h3>3 · Inline edit</h3>
+        <h3>4 · Inline edit</h3>
         <p>Select code, describe a change (“add error handling”), and it rewrites that selection in place.</p>
         <p class="muted">Best for: targeted refactors, renames, adding tests to one file.</p>
       </div>
       <div class="card">
         <div class="ico">🤖</div>
-        <h3>4 · Agent</h3>
+        <h3>5 · Agent</h3>
         <p>You give a goal; it reads files, makes multi-file changes, runs commands/tests, and fixes its own errors — then reports back.</p>
         <p class="muted">Best for: whole features, migrations, “make the tests pass.”</p>
-      </div>
-      <div class="card">
-        <div class="ico">🔍</div>
-        <h3>5 · Review &amp; explain</h3>
-        <p>Point it at a diff, a file, or an unfamiliar repo and ask for a review, a summary, or a walkthrough.</p>
-        <p class="muted">Best for: code review, onboarding to a codebase, learning.</p>
       </div>
       <div class="card" style="border-style:dashed">
         <div class="ico">🧭</div>
@@ -88,35 +92,60 @@
           the result.</p>
       </div>
     </div>
+
+    <div class="quiz" data-quiz data-quiz-id="apply-modes">
+      <p class="quiz-q"><span class="quiz-kicker">Check your knowledge</span>Across all five modes, what stays the same?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-opt">The AI is responsible for the code it writes</button>
+        <button type="button" class="quiz-opt" data-correct>You're the pilot and it's the copilot — you steer, review, and own the result</button>
+        <button type="button" class="quiz-opt">You should always pick the most autonomous mode available</button>
+      </div>
+      <p class="quiz-explain">Autocomplete or full agent, the mindset doesn't change: it drafts fast, but you steer and
+        you own what ships. More power isn't automatically better — match the mode to the task.</p>
+    </div>
   </section>
 
   <!-- ===================== PICK ===================== -->
   <section id="pick">
     <h2>Which mode should I use?</h2>
-    <div class="ifthen">
+
+    <div class="picker" data-picker hidden>
+      <p class="picker-q">Pick the line that best describes your situation right now:</p>
+      <div class="picker-choices">
+        <button type="button" class="picker-choice" data-mode="autocomplete">I'm mid-flow and just want the next line or some boilerplate</button>
+        <button type="button" class="picker-choice" data-mode="chat">I'm unsure how to approach this, or want a concept explained</button>
+        <button type="button" class="picker-choice" data-mode="review">I'm new to this codebase, or reviewing someone's PR</button>
+        <button type="button" class="picker-choice" data-mode="inline">The change is contained to a selection or a single file</button>
+        <button type="button" class="picker-choice" data-mode="agent">It spans several files or needs running/testing to get right</button>
+      </div>
+      <div class="picker-result" aria-live="polite" hidden></div>
+      <p class="muted" style="font-size:.85rem;margin-top:.8rem">Your pick highlights the matching row in the full guide below.</p>
+    </div>
+
+    <div class="ifthen" data-mode="autocomplete">
       <div class="if"><span class="lbl">If</span> you're mid-flow and just want the next line or some boilerplate…</div>
       <div class="arrow">→</div>
       <div class="then"><span class="lbl">Then</span> lean on <b>autocomplete</b>. Don't stop to write a prompt.</div>
     </div>
-    <div class="ifthen">
+    <div class="ifthen" data-mode="chat">
       <div class="if"><span class="lbl">If</span> you're unsure how to approach something or want a concept explained…</div>
       <div class="arrow">→</div>
       <div class="then"><span class="lbl">Then</span> use <b>chat</b>. Ask it to compare options and explain trade-offs before you write anything.</div>
     </div>
-    <div class="ifthen">
+    <div class="ifthen" data-mode="review">
+      <div class="if"><span class="lbl">If</span> you're new to a codebase, or reviewing someone's PR…</div>
+      <div class="arrow">→</div>
+      <div class="then"><span class="lbl">Then</span> use <b>review/explain</b> mode to get a map and a second opinion — then confirm the important parts yourself.</div>
+    </div>
+    <div class="ifthen" data-mode="inline">
       <div class="if"><span class="lbl">If</span> the change is contained to a selection or a single file…</div>
       <div class="arrow">→</div>
       <div class="then"><span class="lbl">Then</span> use <b>inline edit</b> — fast, and easy to eyeball the result.</div>
     </div>
-    <div class="ifthen">
+    <div class="ifthen" data-mode="agent">
       <div class="if"><span class="lbl">If</span> the task spans several files or needs running/testing to get right…</div>
       <div class="arrow">→</div>
       <div class="then"><span class="lbl">Then</span> use an <b>agent</b> — but work on a branch and review the diff before merging.</div>
-    </div>
-    <div class="ifthen">
-      <div class="if"><span class="lbl">If</span> you're new to a codebase, or reviewing someone's PR…</div>
-      <div class="arrow">→</div>
-      <div class="then"><span class="lbl">Then</span> use <b>review/explain</b> mode to get a map and a second opinion — then confirm the important parts yourself.</div>
     </div>
     <div class="callout watch">
       <span class="tag">⚠️ Watch out</span>
@@ -181,6 +210,33 @@
       <p>Keep a personal note of prompts that worked well. “Write tests for X including edge cases and error paths” is
         the kind of reusable recipe that saves you every week.</p>
     </div>
+
+    <details class="reveal">
+      <summary>Show me “iterate” in action</summary>
+      <div class="reveal-body">
+        <p>You don't have to nail the whole prompt on the first try — steer with short follow-ups:</p>
+        <ol>
+          <li><b>You:</b> “Write a function to fetch a user by ID from our API.”</li>
+          <li><b>You:</b> “Good. Now handle a 404 by returning null instead of throwing.”</li>
+          <li><b>You:</b> “Add a 5-second timeout and one retry.”</li>
+          <li><b>You:</b> “Now write two tests: the happy path and the 404 case.”</li>
+        </ol>
+        <p class="muted">Each step is tiny and easy to review. That beats writing one giant prompt and hoping — and you
+          can stop the moment it's good enough.</p>
+      </div>
+    </details>
+
+    <div class="quiz" data-quiz data-quiz-id="apply-prompting">
+      <p class="quiz-q"><span class="quiz-kicker">Check your knowledge</span>Which prompt is most likely to get you a
+        usable answer?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-opt">“Fix my code.”</button>
+        <button type="button" class="quiz-opt">“Write a function to validate email.”</button>
+        <button type="button" class="quiz-opt" data-correct>“In TypeScript, write <code>isValidEmail(input: string): boolean</code> for a signup form — simple readable regex, no libraries, trim whitespace, plus 3 unit tests.”</button>
+      </div>
+      <p class="quiz-explain">The winner spells out goal, context, constraints, and format. The model only knows what's
+        in front of it, so specifics turn a generic reply into a usable one.</p>
+    </div>
   </section>
 
   <!-- ===================== VERIFY ===================== -->
@@ -199,6 +255,18 @@
       <span class="tag">⚠️ Watch out</span>
       <p><b>You own the code you commit</b> — not the AI. “The assistant wrote it” is never the explanation for a bug in
         production. Treat its output like a pull request from a fast but junior teammate.</p>
+    </div>
+
+    <div class="quiz" data-quiz data-quiz-id="apply-verify">
+      <p class="quiz-q"><span class="quiz-kicker">Check your knowledge</span>An AI writes a function that calls
+        <code>fetchData()</code> from a library — but you've never heard of that method. What's the right move?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-opt">Ship it — the AI wouldn't invent a method that doesn't exist</button>
+        <button type="button" class="quiz-opt" data-correct>Confirm the method actually exists in the docs before relying on it</button>
+        <button type="button" class="quiz-opt">Rename it to something you recognize and move on</button>
+      </div>
+      <p class="quiz-explain">Hallucinated APIs — plausible function or library names that don't exist — are common. Check
+        the real docs, and remember: you own the code you commit, not the AI.</p>
     </div>
   </section>
 
@@ -268,7 +336,7 @@
 
 <footer class="site-footer">
   <p>A personal learning hub by Julia Sheehan · <a href="https://github.com/juliamsheehan/juliamsheehan.github.io">source on GitHub</a></p>
-  <p class="muted">Last reviewed July 2026. AI moves fast — check the linked official docs for the latest specifics.</p>
+  <p class="muted">Last reviewed 14 July 2026. AI moves fast — check the linked official docs for the latest specifics.</p>
 </footer>
 
 </body>

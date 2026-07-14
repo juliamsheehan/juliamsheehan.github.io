@@ -10,10 +10,10 @@
   --accent-soft: #eef0ff;
 
   /* Surfaces (light) */
-  --bg: #f7f8fc;
-  --bg-elev: #ffffff;
-  --card: #ffffff;
-  --border: #e5e7f0;
+  --bg: #f4f3ef;
+  --bg-elev: #fcfbf8;
+  --card: #fcfbf8;
+  --border: #e7e4db;
   --shadow: 0 1px 2px rgba(16, 24, 40, .06), 0 8px 24px rgba(16, 24, 40, .06);
 
   /* Text */
@@ -318,6 +318,205 @@ tr:hover td { background: var(--accent-soft); }
 /* SVG diagrams */
 .diagram { display: block; max-width: 100%; height: auto; margin: 1rem auto; }
 .diagram text { font-family: var(--font); }
+
+/* ============================================================
+   Interactive learning components (reusable across pages)
+   - .quiz          "Check your knowledge" multiple-choice blocks
+   - .quiz-progress  per-page score tracker
+   - .reveal         styled native <details>/<summary> disclosures
+   - .picker         click-your-situation recommendation helper
+   All degrade gracefully with JS off and are keyboard-operable.
+   ============================================================ */
+
+/* ---- Quiz block ---- */
+.quiz {
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--accent);
+  background: var(--bg-elev);
+  border-radius: var(--radius-sm);
+  padding: 1.1rem 1.2rem 1.2rem;
+  margin: 1.4rem 0;
+  box-shadow: var(--shadow);
+}
+.quiz-kicker {
+  display: block;
+  font-weight: 800;
+  font-size: .74rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: .3rem;
+}
+.quiz-q { color: var(--ink); font-weight: 700; margin: 0 0 .8rem; }
+.quiz-options { display: grid; gap: .5rem; }
+.quiz-opt {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  font-size: .95rem;
+  color: var(--ink);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: .6rem .8rem .6rem 2.4rem;
+  cursor: pointer;
+  position: relative;
+  transition: border-color .12s ease, background .12s ease;
+}
+.quiz-opt::before {
+  content: "";
+  position: absolute;
+  left: .8rem; top: 50%; transform: translateY(-50%);
+  width: 1.1rem; height: 1.1rem;
+  border: 2px solid var(--ink-faint);
+  border-radius: 50%;
+}
+.quiz-opt:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-soft); }
+.quiz-opt:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.quiz-opt:disabled { cursor: default; }
+.quiz-opt.is-correct {
+  border-color: var(--ifthen);
+  background: color-mix(in srgb, var(--ifthen) 14%, transparent);
+}
+.quiz-opt.is-correct::before {
+  content: "✓"; border-color: var(--ifthen); background: var(--ifthen);
+  color: #fff; font-size: .8rem; font-weight: 800; text-align: center; line-height: 1.1rem;
+}
+.quiz-opt.is-wrong {
+  border-color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+}
+.quiz-opt.is-wrong::before {
+  content: "✕"; border-color: var(--danger); background: var(--danger);
+  color: #fff; font-size: .8rem; font-weight: 800; text-align: center; line-height: 1.1rem;
+}
+.quiz-feedback {
+  margin: .8rem 0 0;
+  font-weight: 700;
+  font-size: .95rem;
+}
+.quiz-feedback.right { color: var(--ifthen); }
+.quiz-feedback.wrong { color: var(--danger); }
+.quiz-explain {
+  margin: .4rem 0 0;
+  font-size: .93rem;
+  color: var(--ink-soft);
+}
+.quiz:not(.answered) .quiz-explain { display: none; }
+
+/* ---- Per-page quiz progress tracker ---- */
+.quiz-progress {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem .9rem;
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--accent);
+  background: var(--bg-elev);
+  border-radius: var(--radius-sm);
+  padding: .8rem 1.1rem;
+  margin: 1.4rem 0;
+}
+.quiz-progress .qp-label {
+  font-weight: 800; font-size: .78rem; text-transform: uppercase;
+  letter-spacing: .04em; color: var(--ink-faint);
+}
+.quiz-progress .qp-count { color: var(--ink); font-size: 1.05rem; }
+.quiz-progress .qp-count b { color: var(--accent); }
+.quiz-progress .qp-bar {
+  flex: 1 1 120px; min-width: 100px; height: 8px;
+  background: var(--border); border-radius: 999px; overflow: hidden;
+}
+.quiz-progress .qp-fill {
+  display: block; height: 100%; width: 0;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  border-radius: 999px; transition: width .3s ease;
+}
+.quiz-reset {
+  font: inherit; font-size: .85rem; font-weight: 700;
+  color: var(--ink-soft); background: transparent;
+  border: 1px solid var(--border); border-radius: 999px;
+  padding: .3rem .8rem; cursor: pointer;
+}
+.quiz-reset:hover { border-color: var(--accent); color: var(--accent); }
+.quiz-reset:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* No-JS: the tracker relies on script, so hide it until enhanced */
+.quiz-progress[hidden] { display: none; }
+
+/* ---- Reveal (styled native details/summary) ---- */
+.reveal {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elev);
+  margin: 1rem 0;
+  overflow: hidden;
+}
+.reveal > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: .7rem 1rem;
+  font-weight: 700;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.reveal > summary::-webkit-details-marker { display: none; }
+.reveal > summary::before {
+  content: "▸";
+  color: var(--accent);
+  font-size: .9rem;
+  transition: transform .15s ease;
+}
+.reveal[open] > summary::before { transform: rotate(90deg); }
+.reveal > summary:hover { color: var(--accent); }
+.reveal > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.reveal-body { padding: 0 1rem 1rem; }
+.reveal-body > :first-child { margin-top: 0; }
+.reveal-body > :last-child { margin-bottom: 0; }
+
+/* ---- Situation picker (interactive If → Then helper) ---- */
+.picker {
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--accent);
+  background: var(--bg-elev);
+  border-radius: var(--radius-sm);
+  padding: 1.1rem 1.2rem 1.2rem;
+  margin: 1rem 0 1.4rem;
+  box-shadow: var(--shadow);
+}
+.picker[hidden] { display: none; }
+.picker-q { color: var(--ink); font-weight: 700; margin: 0 0 .8rem; }
+.picker-choices { display: grid; gap: .5rem; }
+.picker-choice {
+  display: block; width: 100%; text-align: left;
+  font: inherit; font-size: .95rem; color: var(--ink);
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: .6rem .85rem;
+  cursor: pointer; transition: border-color .12s ease, background .12s ease;
+}
+.picker-choice:hover { border-color: var(--accent); background: var(--accent-soft); }
+.picker-choice:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.picker-choice[aria-pressed="true"] {
+  border-color: var(--accent); background: var(--accent-soft);
+  color: var(--accent); font-weight: 700;
+}
+.picker-result {
+  margin-top: 1rem;
+  border-left: 4px solid var(--ifthen);
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: .8rem 1rem;
+}
+.picker-result[hidden] { display: none; }
+.picker-result .pr-mode { color: var(--ink); font-weight: 800; font-size: 1.05rem; margin: 0 0 .2rem; }
+.picker-result .pr-advice { margin: 0; font-size: .95rem; }
+/* highlight the matching static If → Then when a choice is made */
+.ifthen.highlight .if, .ifthen.highlight .then {
+  box-shadow: 0 0 0 2px var(--accent);
+  transition: box-shadow .2s ease;
+}
 
 /* ---------------- Footer ---------------- */
 .site-footer {
