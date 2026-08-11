@@ -398,6 +398,8 @@ tr:hover td { background: var(--accent-soft); }
 }
 .quiz-feedback.right { color: var(--ifthen); }
 .quiz-feedback.wrong { color: var(--danger); }
+/* Per-answer note (data-feedback) reads as prose, not as part of the verdict */
+.quiz-feedback .qf-note { font-weight: 500; color: var(--ink-soft); }
 .quiz-explain {
   margin: .4rem 0 0;
   font-size: .93rem;

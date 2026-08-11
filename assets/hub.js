@@ -61,6 +61,8 @@
     //     </div>
     //     <p class="quiz-explain">Why the right answer is right.</p>
     //   </div>
+    // Optional: add data-feedback="…" to any option for feedback tailored to that
+    // specific choice (e.g. naming the exact misconception behind a wrong answer).
     // Add <div class="quiz-progress" data-quiz-progress hidden></div> once per page.
     initQuizzes();
 
@@ -143,8 +145,18 @@
           if (oi === chosenIndex) opt.setAttribute("aria-pressed", "true");
         });
         feedback.hidden = false;
-        feedback.textContent = correct ? "✓ Correct!" : "✕ Not quite —";
         feedback.className = "quiz-feedback " + (correct ? "right" : "wrong");
+        feedback.textContent = correct ? "✓ Correct!" : "✕ Not quite —";
+
+        // Optional per-answer feedback: data-feedback on the chosen .quiz-opt.
+        // Without it, the block behaves exactly as before (generic verdict + .quiz-explain).
+        var note = opts[chosenIndex].getAttribute("data-feedback");
+        if (note) {
+          var span = document.createElement("span");
+          span.className = "qf-note";
+          span.textContent = " " + note;
+          feedback.appendChild(span);
+        }
       }
 
       // Restore a previous answer for returning learners.
