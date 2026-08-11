@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Game Lab — Two Versions of One Coding Game</title>
+<meta name="description" content="An interactive coding lab for the Digital Game Design badge, built twice. Compare version 1 (Phaser) with version 2 (a from-scratch rebuild) and see how the project evolved." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>" />
+<link rel="stylesheet" href="assets/style.css" />
+<script src="assets/hub.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="hub.html">🤖 <span>AI × Coding</span></a>
+  <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">☰</button>
+  <nav class="site-nav">
+    <a class="ext" href="index.html">◀ Projects</a>
+    <a href="hub.html">Home</a>
+    <a href="fundamentals.html">Fundamentals</a>
+    <a href="timeline.html">Timeline</a>
+    <a href="news.html">Latest News</a>
+    <a href="apply.html">Apply to Coding</a>
+    <a href="tools.html">Tools &amp; Workflows</a>
+    <a href="glossary.html">Glossary</a>
+    <a class="ext" href="game-v2/?badge=2">🎮 Game Lab</a>
+    <button class="theme-toggle" aria-label="Toggle light/dark theme">🌙</button>
+  </nav>
+</header>
+
+<main>
+
+  <section class="hero">
+    <span class="eyebrow">Interactive · built twice</span>
+    <h1>🎮 The Game Lab</h1>
+    <p class="lead">A hands-on lab where you plan, build, code, test, and share your own little maze
+      game — the <b>Digital Game Design</b> activity. It's been built <b>two different ways</b>, and
+      both still run. Play them back-to-back to see how the project grew from version&nbsp;1 to
+      version&nbsp;2.</p>
+    <p>
+      <a class="btn" href="game-v2/?badge=2">▶ Launch the newest version</a>
+      <a class="btn ghost" href="game/">Launch the original</a>
+    </p>
+  </section>
+
+  <!-- The two versions -->
+  <section id="versions">
+    <h2>Two versions, one activity</h2>
+    <p>Same goal both times — help a beginner design and code a small game — but rebuilt from the
+      ground up with a different engine and a different way of coding the game's rules.</p>
+
+    <div class="grid two">
+      <a class="card" href="game/">
+        <div class="ico">🦊</div>
+        <span class="more">Version 1 · the original</span>
+        <h3>Game Design Lab</h3>
+        <p>Built on the <b>Phaser</b> game engine, guided by Pip the fox. You paint a world, code its
+          brain with drag-and-drop blocks, then play it with the arrow keys and print a certificate.</p>
+        <p><b>Tech:</b> Phaser + several JS modules (game, coder, share, themes).</p>
+        <span class="more">Launch version 1 →</span>
+      </a>
+
+      <a class="card" href="game-v2/?badge=2">
+        <div class="ico">🎮</div>
+        <span class="more">Version 2 · newest 🆕</span>
+        <h3>Coding for Good — Digital Game Design</h3>
+        <p>A ground-up rebuild in <b>plain HTML/CSS/JS</b> — no game engine. The rules are coded with a
+          <b>Scratch-style event editor</b> (event "hat" blocks with nested actions), and finished games
+          are shared as a self-contained link, no server needed.</p>
+        <p><b>Tech:</b> hand-written grid engine + block interpreter; ~0 dependencies.</p>
+        <span class="more">Launch version 2 (Badge 2) →</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- What changed and why -->
+  <section id="changed">
+    <h2>What changed between v1 and v2 — and why</h2>
+    <p>Rebuilding it wasn't just a fresh coat of paint. Each change was a deliberate design choice:</p>
+
+    <div class="grid two">
+      <div class="card">
+        <div class="ico">🧩</div>
+        <h3>From a game engine to zero dependencies</h3>
+        <p>v1 leaned on Phaser (a ~1&nbsp;MB library). v2 is a small, hand-written grid + interpreter,
+          so it loads instantly and is easy to read, host, and maintain.</p>
+      </div>
+      <div class="card">
+        <div class="ico">🎛️</div>
+        <h3>From block programs to event scripts</h3>
+        <p>v2 codes rules like Scratch: <code>when ▲ pressed → move up</code>,
+          <code>when I touch a key → open the door</code>. Kids program the behavior itself, not just a
+          fixed program.</p>
+      </div>
+      <div class="card">
+        <div class="ico">🔗</div>
+        <h3>Shareable, self-contained games</h3>
+        <p>v2 encodes your whole maze <i>and</i> its code into a single <code>#play=…</code> link — a
+          friend opens it and plays instantly, no download and no server.</p>
+      </div>
+      <div class="card">
+        <div class="ico">📱</div>
+        <h3>Rethought layout &amp; play</h3>
+        <p>The maze and code blocks sit side-by-side like a real editor, with an on-screen D-pad for
+          tablets and a "turn sideways" prompt on small phones.</p>
+      </div>
+    </div>
+
+    <div class="ifthen">
+      <div class="if"><span class="lbl">If</span> You just want to see the finished, current lab…</div>
+      <div class="arrow">→</div>
+      <div class="then"><span class="lbl">Then</span> Open <a href="game-v2/?badge=2">version 2 (Badge 2: Game Design)</a>. Use the switcher at the top to peek at Badge 1, too.</div>
+    </div>
+  </section>
+
+  <!-- Credits -->
+  <section id="credits">
+    <h2>Who made what</h2>
+    <div class="callout plain">
+      <span class="tag">💡 Credit where it's due</span>
+      <p><b>Version 2 · Badge 2: Digital Game Design</b> — the 5-step activity, the Scratch-style script
+        editor, the maze builder, the share links, and the certificate — was <b>designed and built by
+        Julia Sheehan</b>.</p>
+      <p>It's built on top of a shared "Coding for Good" base app (<b>Badge 1: Coding Basics</b>) created
+        by <b>Nandi Hawkins</b>. When you open version 2, the "Badge&nbsp;1 / Badge&nbsp;2" switcher lets
+        you try both — Badge&nbsp;2 is the game-design work featured here.</p>
+    </div>
+    <div class="callout example">
+      <span class="tag">🔍 Want to look under the hood?</span>
+      <p>Version 2's source lives alongside this site in <code>game-v2/</code> — a single
+        <code>index.html</code> with <code>badge2.js</code> / <code>badge2.css</code> (the Game Design
+        work) layered over the shared engine. Version 1 lives in <code>game/</code>.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>A personal learning hub by Julia Sheehan · <a href="https://github.com/juliamsheehan/juliamsheehan.github.io">source on GitHub</a></p>
+  <p class="muted">Last reviewed July 2026. Both versions of the Game Lab are preserved so the iteration stays visible.</p>
+</footer>
+
+</body>
+</html>

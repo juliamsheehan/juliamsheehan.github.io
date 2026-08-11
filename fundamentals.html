@@ -12,17 +12,18 @@
 <body>
 
 <header class="site-header">
-  <a class="logo" href="index.html">🤖 <span>AI × Coding</span></a>
+  <a class="logo" href="hub.html">🤖 <span>AI × Coding</span></a>
   <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">☰</button>
   <nav class="site-nav">
-    <a href="index.html">Home</a>
+    <a class="ext" href="index.html">◀ Projects</a>
+    <a href="hub.html">Home</a>
     <a href="fundamentals.html">Fundamentals</a>
     <a href="timeline.html">Timeline</a>
     <a href="news.html">Latest News</a>
     <a href="apply.html">Apply to Coding</a>
     <a href="tools.html">Tools &amp; Workflows</a>
     <a href="glossary.html">Glossary</a>
-    <a class="ext" href="game/">🎮 Game Lab</a>
+    <a class="ext" href="game-v2/?badge=2">🎮 Game Lab</a>
     <button class="theme-toggle" aria-label="Toggle light/dark theme">🌙</button>
   </nav>
 </header>
@@ -239,14 +240,14 @@
       <li><b>High (≈0.8–1.2)</b> — more willing to pick less-likely options. Varied, creative, sometimes off the rails.</li>
     </ul>
     <div class="ifthen">
-      <div class="if"><span class="lbl">If</span> you're generating code, extracting data, or want the same answer twice…</div>
+      <div class="if"><span class="lbl">If</span> You're generating code, extracting data, or want the same answer twice…</div>
       <div class="arrow">→</div>
-      <div class="then"><span class="lbl">Then</span> use a <b>low</b> temperature.</div>
+      <div class="then"><span class="lbl">Then</span> Use a <b>low</b> temperature.</div>
     </div>
     <div class="ifthen">
-      <div class="if"><span class="lbl">If</span> you're brainstorming names, ideas, or copy variations…</div>
+      <div class="if"><span class="lbl">If</span> You're brainstorming names, ideas, or copy variations…</div>
       <div class="arrow">→</div>
-      <div class="then"><span class="lbl">Then</span> use a <b>higher</b> temperature. (Most chat apps hide this; it matters most when you call an API.)</div>
+      <div class="then"><span class="lbl">Then</span> Use a <b>higher</b> temperature. (Most chat apps hide this; it matters most when you call an API.)</div>
     </div>
   </section>
 
@@ -352,9 +353,9 @@
         it needs and say “answer using this.” Fewer hallucinations, and it can cite sources.</p>
     </div>
     <div class="ifthen">
-      <div class="if"><span class="lbl">If</span> you need the model to answer using private or fast-changing information…</div>
+      <div class="if"><span class="lbl">If</span> You need the model to answer using private or fast-changing information…</div>
       <div class="arrow">→</div>
-      <div class="then"><span class="lbl">Then</span> reach for RAG before you consider fine-tuning — it's cheaper, updatable, and easier to trust.</div>
+      <div class="then"><span class="lbl">Then</span> Reach for RAG before you consider fine-tuning — it's cheaper, updatable, and easier to trust.</div>
     </div>
 
     <div class="quiz" data-quiz data-quiz-id="fund-rag">
@@ -391,14 +392,14 @@
       steps, checking their own work, then giving you the final result. They're noticeably better at math, logic,
       multi-step planning, and hard debugging.</p>
     <div class="ifthen">
-      <div class="if"><span class="lbl">If</span> your task is a quick lookup, rename, or simple snippet…</div>
+      <div class="if"><span class="lbl">If</span> Your task is a quick lookup, rename, or simple snippet…</div>
       <div class="arrow">→</div>
-      <div class="then"><span class="lbl">Then</span> a fast standard model is cheaper and plenty good.</div>
+      <div class="then"><span class="lbl">Then</span> A fast standard model is cheaper and plenty good.</div>
     </div>
     <div class="ifthen">
-      <div class="if"><span class="lbl">If</span> the task needs planning across many steps or careful logic (a tricky bug, a system design)…</div>
+      <div class="if"><span class="lbl">If</span> The task needs planning across many steps or careful logic (a tricky bug, a system design)…</div>
       <div class="arrow">→</div>
-      <div class="then"><span class="lbl">Then</span> switch to a reasoning model and accept it's a bit slower.</div>
+      <div class="then"><span class="lbl">Then</span> Switch to a reasoning model and accept it's a bit slower.</div>
     </div>
   </section>
 
@@ -467,19 +468,19 @@
     <h2>Prompting vs RAG vs fine-tuning — which do I need?</h2>
     <p>A question that trips up almost everyone. Here's the honest order to try things in:</p>
     <div class="ifthen">
-      <div class="if"><span class="lbl">If</span> the model just needs clearer instructions or better wording…</div>
+      <div class="if"><span class="lbl">If</span> The model just needs clearer instructions or better wording…</div>
       <div class="arrow">→</div>
-      <div class="then"><span class="lbl">Then</span> <b>improve the prompt.</b> Free, instant, solves most problems. Start here.</div>
+      <div class="then"><span class="lbl">Then</span> <b>Improve the prompt.</b> Free, instant, solves most problems. Start here.</div>
     </div>
     <div class="ifthen">
-      <div class="if"><span class="lbl">If</span> it needs <em>facts it doesn't have</em> — your docs, your code, recent info…</div>
+      <div class="if"><span class="lbl">If</span> It needs <em>facts it doesn't have</em> — your docs, your code, recent info…</div>
       <div class="arrow">→</div>
-      <div class="then"><span class="lbl">Then</span> use <b>RAG.</b> Give it the source material at question time.</div>
+      <div class="then"><span class="lbl">Then</span> Use <b>RAG.</b> Give it the source material at question time.</div>
     </div>
     <div class="ifthen">
-      <div class="if"><span class="lbl">If</span> it needs a consistent <em>style, format, or behavior</em> that prompting can't reliably enforce…</div>
+      <div class="if"><span class="lbl">If</span> It needs a consistent <em>style, format, or behavior</em> that prompting can't reliably enforce…</div>
       <div class="arrow">→</div>
-      <div class="then"><span class="lbl">Then</span> consider <b>fine-tuning.</b> Most powerful, most effort — a last resort, not a first move.</div>
+      <div class="then"><span class="lbl">Then</span> Consider <b>fine-tuning.</b> Most powerful, most effort — a last resort, not a first move.</div>
     </div>
     <div class="callout tip">
       <span class="tag">✅ Tip</span>
@@ -494,7 +495,7 @@
 
 <footer class="site-footer">
   <p>A personal learning hub by Julia Sheehan · <a href="https://github.com/juliamsheehan/juliamsheehan.github.io">source on GitHub</a></p>
-  <p class="muted">Last reviewed 14 July 2026. AI moves fast — check the linked official docs for the latest specifics.</p>
+  <p class="muted">Last reviewed July 2026. AI moves fast — check the linked official docs for the latest specifics.</p>
 </footer>
 
 </body>

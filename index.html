@@ -3,26 +3,22 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>AI × Coding — A Beginner's Learning Hub</title>
-<meta name="description" content="A friendly, up-to-date home base for understanding AI concepts and applying them to real coding — for work and personal projects." />
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>" />
+<title>Julia Sheehan — Projects</title>
+<meta name="description" content="A small portfolio of interactive learning tools and games by Julia Sheehan: an AI × Coding learning hub and two versions of a Game Design Lab." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>" />
 <link rel="stylesheet" href="assets/style.css" />
+<link rel="stylesheet" href="assets/portfolio.css" />
 <script src="assets/hub.js"></script>
 </head>
-<body>
+<body class="portfolio">
 
 <header class="site-header">
-  <a class="logo" href="index.html">🤖 <span>AI × Coding</span></a>
+  <a class="logo" href="index.html">✨ <span>Julia Sheehan</span></a>
   <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">☰</button>
   <nav class="site-nav">
-    <a href="index.html">Home</a>
-    <a href="fundamentals.html">Fundamentals</a>
-    <a href="timeline.html">Timeline</a>
-    <a href="news.html">Latest News</a>
-    <a href="apply.html">Apply to Coding</a>
-    <a href="tools.html">Tools &amp; Workflows</a>
-    <a href="glossary.html">Glossary</a>
-    <a class="ext" href="game/">🎮 Game Lab</a>
+    <a href="hub.html">AI × Coding</a>
+    <a href="game-v2/?badge=2">🎮 Game Lab v2</a>
+    <a href="game/">🦊 Game Lab v1</a>
     <button class="theme-toggle" aria-label="Toggle light/dark theme">🌙</button>
   </nav>
 </header>
@@ -30,146 +26,51 @@
 <main>
 
   <section class="hero">
-    <span class="eyebrow">Your AI cheat sheet · updated for 2026</span>
-    <h1>Understand AI. Then <em>use</em> it in your code.</h1>
-    <p class="lead">Everything about AI seems to change every week, and it's scattered across a
-      hundred blog posts. This is <b>one calm place</b> to learn the core ideas in plain English —
-      and turn them into things you actually do when you code, at work and for fun.</p>
-    <p>
-      <a class="btn" href="fundamentals.html">Start with the basics →</a>
-      <a class="btn ghost" href="apply.html">Jump to “Apply to Coding”</a>
-    </p>
+    <span class="eyebrow">Portfolio · projects</span>
+    <h1>Hi, I'm Julia 👋</h1>
+    <p class="lead">I build friendly, hands-on tools that make learning to code — and making things
+      with code — feel approachable. Here are a few projects. Pick one to explore.</p>
   </section>
 
-  <!-- How to read this site -->
-  <section id="legend">
-    <h2>How this site is written</h2>
-    <p>Concepts are short. Wherever it helps, you'll see one of these colored boxes:</p>
-    <div class="callout plain">
-      <span class="tag">💡 In plain English</span>
-      <p>The no-jargon version. If you only read one thing, read this.</p>
-    </div>
-    <div class="callout example">
-      <span class="tag">🔍 Example</span>
-      <p>A concrete, everyday example so the idea sticks.</p>
-    </div>
-    <div class="callout tip">
-      <span class="tag">✅ Tip</span>
-      <p>A small habit or shortcut worth adopting.</p>
-    </div>
-    <div class="callout watch">
-      <span class="tag">⚠️ Watch out</span>
-      <p>A common trap, limitation, or safety note.</p>
-    </div>
-    <p>And for “when do I actually use this?”, look for green/amber <b>If → Then</b> cards:</p>
-    <div class="ifthen">
-      <div class="if"><span class="lbl">If</span> you're not sure a concept applies to your situation…</div>
-      <div class="arrow">→</div>
-      <div class="then"><span class="lbl">Then</span> the card tells you exactly what to do about it.</div>
-    </div>
-  </section>
-
-  <!-- Section cards -->
-  <section id="explore">
-    <h2>Where do you want to go?</h2>
-    <div class="grid two">
-      <a class="card" href="fundamentals.html">
-        <div class="ico">🧱</div>
-        <h3>Fundamentals</h3>
-        <p>What an LLM, token, prompt, context window, embedding, RAG, and agent actually
-          <i>are</i> — beginner level, with diagrams.</p>
-        <span class="more">Learn the building blocks →</span>
-      </a>
-      <a class="card" href="timeline.html">
-        <div class="ico">🗓️</div>
-        <h3>Timeline of Big Updates</h3>
-        <p>From the Transformer to ChatGPT to the year agents took over. What changed, when,
-          and why it mattered.</p>
-        <span class="more">See how we got here →</span>
-      </a>
-      <a class="card" href="news.html">
-        <div class="ico">📰</div>
-        <h3>Latest News</h3>
-        <p>A periodic, plain-English snapshot of what's changing in AI right now — models, agents,
-          tools, and policy — plus where to follow live.</p>
-        <span class="more">Catch up on what's new →</span>
-      </a>
-      <a class="card" href="apply.html">
-        <div class="ico">🛠️</div>
-        <h3>Apply it to Coding</h3>
-        <p>Concrete workflows for your job and side projects: autocomplete, chat, agents,
-          reviews, tests, and <em>If → Then</em> guides for picking one.</p>
-        <span class="more">Put it to work →</span>
-      </a>
-      <a class="card" href="tools.html">
-        <div class="ico">🧰</div>
-        <h3>Tools &amp; Workflows</h3>
-        <p>The categories of AI coding tools, how they differ, what MCP is, and repeatable
-          workflow patterns that keep quality high.</p>
-        <span class="more">Compare the options →</span>
-      </a>
-      <a class="card" href="glossary.html">
-        <div class="ico">📖</div>
-        <h3>Glossary &amp; Links</h3>
-        <p>Every term on this site defined in one line, with a search box — plus trustworthy
-          places to keep learning.</p>
-        <span class="more">Look something up →</span>
-      </a>
-      <a class="card" href="game/">
-        <div class="ico">🎮</div>
-        <h3>Game Design Lab</h3>
-        <p>The interactive coding lab that used to live here. Still runs — plan, build, code,
-          and share a little game.</p>
-        <span class="more">Go play →</span>
-      </a>
-    </div>
-  </section>
-
-  <!-- AI in one minute -->
-  <section id="one-minute">
-    <h2>AI in one minute (the mental model)</h2>
-    <p>If you remember just one picture, make it this one. Today's AI coding tools are all
-      built on the same core idea:</p>
-    <div class="callout plain">
-      <span class="tag">💡 In plain English</span>
-      <p>A <b>large language model (LLM)</b> is a very good <b>“predict the next word”</b> machine.
-        It read a huge chunk of the internet and learned the patterns in language and code. You give it
-        text (a <b>prompt</b>); it continues that text one piece at a time, guessing what's most likely to
-        come next. That's it. Everything else — chat, coding assistants, agents — is that engine
-        wrapped in clever plumbing.</p>
-    </div>
+  <section id="projects">
+    <h2>Projects</h2>
     <div class="grid three">
-      <div class="card">
-        <div class="ico">1️⃣</div>
-        <h3>It predicts</h3>
-        <p>It doesn't “look things up” or “know” — it produces the most likely next text based on
-          patterns. Great at language and code, but it can be confidently wrong.</p>
-      </div>
-      <div class="card">
-        <div class="ico">2️⃣</div>
-        <h3>Context is everything</h3>
-        <p>It only knows what's in front of it right now (your prompt + files you share). Give it
-          the right context and it gets dramatically better.</p>
-      </div>
-      <div class="card">
-        <div class="ico">3️⃣</div>
-        <h3>You stay the pilot</h3>
-        <p>It's a fast, tireless assistant — not an authority. You review, test, and decide. Trust,
-          but verify.</p>
-      </div>
+
+      <a class="card" href="hub.html">
+        <div class="ico">🤖</div>
+        <h3>AI × Coding</h3>
+        <p>A calm, beginner-friendly learning hub that explains AI concepts in plain English —
+          and shows how to actually use them when you code.</p>
+        <span class="more">Open project →</span>
+      </a>
+
+      <a class="card" href="game-v2/?badge=2">
+        <div class="ico">🎮</div>
+        <h3>Game Lab v2</h3>
+        <p>The newest build of an interactive lab where kids design, code, and share their own maze
+          game — rules coded Scratch-style, playable from a single link.</p>
+        <span class="more">Open project →</span>
+      </a>
+
+      <a class="card" href="game/">
+        <div class="ico">🦊</div>
+        <h3>Game Lab v1</h3>
+        <p>The original game lab, built on the Phaser engine — the first take that version 2 rethinks
+          from the ground up.</p>
+        <span class="more">Open project →</span>
+      </a>
+
     </div>
-    <div class="ifthen">
-      <div class="if"><span class="lbl">If</span> you're brand new and want the ideas to click before anything else…</div>
-      <div class="arrow">→</div>
-      <div class="then"><span class="lbl">Then</span> read <a href="fundamentals.html">Fundamentals</a> top-to-bottom once. 15 minutes, and the rest of the AI world stops feeling like magic.</div>
-    </div>
+
+    <p class="muted" style="text-align:center;margin-top:1.4rem">The Game Lab was built twice — see the short story of
+      <a href="game-lab.html">what changed from v1 to v2 (and who made what) →</a></p>
   </section>
 
 </main>
 
 <footer class="site-footer">
-  <p>A personal learning hub by Julia Sheehan · <a href="https://github.com/juliamsheehan/juliamsheehan.github.io">source on GitHub</a></p>
-  <p class="muted">Last reviewed July 2026. AI moves fast — check the linked official docs for the latest specifics.</p>
+  <p>A personal portfolio by Julia Sheehan · <a href="https://github.com/juliamsheehan/juliamsheehan.github.io">source on GitHub</a></p>
+  <p class="muted">Last reviewed July 2026.</p>
 </footer>
 
 </body>
