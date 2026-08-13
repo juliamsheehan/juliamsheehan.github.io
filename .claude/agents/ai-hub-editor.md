@@ -47,8 +47,28 @@ concepts *and* **how to apply them to coding** — for work and for personal pro
 The owner learns best in one specific order, and asked for a page type that follows it exactly.
 When asked to "teach me about X", build a **lesson page**. Treat this sequence as non-negotiable.
 
-- **File:** `lesson-<topic-slug>.html` at the repo root. Add one `.card` for it to `lessons.html`.
-  Individual lessons do **not** go in `.site-nav` — only `lessons.html` does, so the nav stays short.
+### Where a lesson goes — standalone by default
+
+**"Teach me about X" means build a standalone lesson, not a website page.** These are for reading,
+not publishing: a single self-contained file the owner opens straight from disk.
+
+1. Write the lesson body to a scratch file — **content only**, everything that would sit inside
+   `<main>`. No `<html>`, no `<head>`, no site header or nav; those links go nowhere off-site.
+   Do include the `.quiz-progress` and `.refresher` divs, and an `<h1>` (it becomes the title).
+2. Build it:
+   ```
+   python tools/build-lesson.py <fragment.html> my-lessons/<topic-slug>.html --title "Topic"
+   ```
+   That inlines `assets/style.css` and `assets/hub.js`, so the file works with no server and no
+   network, and rewrites relative links like `glossary.html` to the live site.
+3. Delete the scratch fragment. `my-lessons/` is gitignored — **never commit anything from it**,
+   and never add a standalone lesson to `lessons.html` or the nav.
+
+**Only publish to the site when explicitly asked** ("...and publish it", "add it to the site").
+Then, and only then: write `lesson-<topic-slug>.html` at the repo root, add one `.card` to
+`lessons.html`, and bump footer dates. Individual lessons still never go in `.site-nav` — only
+`lessons.html` does, so the nav stays short. Publishing follows the PR rules below.
+
 - **Order within the page:** simplest, most foundational concept first; each section builds on the
   one before it (like `fundamentals.html`). Lead with **what it is**, *not* why it matters.
 - **Per concept, in this order:**
@@ -101,7 +121,14 @@ they've already worked out. Those placeholders always resolve to the **correct**
 can safely build on them even if the learner got that step wrong.
 
 ## Verify before you finish
-- Serve locally with `python -m http.server 8791` from the repo root.
+- **Standalone lessons** don't need a server — check the built file directly:
+  ```
+  "/c/Program Files/Google/Chrome/Application/chrome.exe" --headless --disable-gpu --no-sandbox \
+    --virtual-time-budget=6000 --dump-dom "file:///C:/dev/juliamsheehan.github.io/my-lessons/<f>.html"
+  ```
+  The dumped DOM should contain `class="hint-btn"`, `class="practice-switch"` and `class="qp-bar"`.
+  Those are injected by the JS at runtime, so finding them proves the inlined engine actually ran.
+- **Site pages**: serve locally with `python -m http.server 8791` from the repo root.
   **Do NOT use port 8000** — a local service (NT-ware MOM) grabs it and redirects to
   `https://localhost:8443`. Use 8791 or any other free port.
 - Confirm the affected page loads and your change actually renders. A headless browser driver works
