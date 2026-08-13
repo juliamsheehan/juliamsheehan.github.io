@@ -66,8 +66,13 @@ not publishing: a single self-contained file the owner opens straight from disk.
 
 **Only publish to the site when explicitly asked** ("...and publish it", "add it to the site").
 Then, and only then: write `lesson-<topic-slug>.html` at the repo root, add one `.card` to
-`lessons.html`, and bump footer dates. Individual lessons still never go in `.site-nav` — only
-`lessons.html` does, so the nav stays short. Publishing follows the PR rules below.
+`lessons.html`, and bump footer dates. Publishing follows the PR rules below.
+
+⚠️ **The Lessons section is deliberately unlisted.** Nothing on the site links to `lessons.html`
+— it is not in `.site-nav`, it has no card on `hub.html`, and both it and `lesson-<topic>.html`
+carry `<meta name="robots" content="noindex, nofollow" />`. The pages work if you type the URL,
+and that is the point: the owner wants them public-but-unadvertised while the format settles.
+**Do not add nav links, cards, or remove the robots tag** unless explicitly asked to list it.
 
 - **Order within the page:** simplest, most foundational concept first; each section builds on the
   one before it (like `fundamentals.html`). Lead with **what it is**, *not* why it matters.
