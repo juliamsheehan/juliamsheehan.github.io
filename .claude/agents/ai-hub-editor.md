@@ -60,12 +60,45 @@ When asked to "teach me about X", build a **lesson page**. Treat this sequence a
      specific answer chosen and names the misconception behind each wrong one.
   6. `.callout.example` tagged **🔍 Worked example** — walk the reader through doing it *correctly*,
      step by step, before asking anything of them.
-  7. `.callout.tip` tagged **✏️ Try it yourself** — a small challenge, no answer given inline. Put the
-     answer in a `.reveal` (`<details>`) underneath so it's there when they want it.
+  7. A **completion step** — the same kind of task with the middle left out for them to fill in.
+     Never jump straight from a finished example to a blank page; that gap is where people stall.
+  8. A `.practice` block — the independent attempt (see below).
 - **End of every lesson:** a "Test your understanding" section — one `.quiz` per major concept in the
   lesson, plus a question or two drawn from the worked examples. Put the page-level
-  `.quiz-progress` near the top so checkpoints and the final set roll into a single score.
+  `.quiz-progress` near the top so checkpoints and the final set roll into a single score, and a
+  `<div class="refresher" data-refresher hidden></div>` beside it for the spaced-review nudge.
 - Skip a step only when it genuinely doesn't apply (e.g. no useful diagram) — never to save effort.
+
+### Quiz questions: spread the difficulty
+
+Recall-only questions let a shaky understanding pass. Across a lesson's checkpoints and its final
+quiz, cover all three of these — the final quiz should hit every one:
+
+- **Remember** — did the idea land at all? ("Which of these is a *resource*?")
+- **Apply** — use it on a case not spelled out in the text. ("Here's a new task — tool or prompt?")
+- **Analyse** — compare, predict a failure, or spot what breaks. ("This config is wrong. Why?")
+
+Bias toward **apply** and **analyse**. Ask about mechanism ("what happens when…"), not vocabulary
+("what does MCP stand for") — a false sense of mastery survives vocabulary questions and dies on
+mechanism ones.
+
+### `.practice` blocks — let them choose how much help
+
+The owner did **not** want to be asked to rate their own experience up front; people can't see their
+own gaps, and a wrong guess sends the lesson off in the wrong direction. Instead, every practice task
+offers both routes at once and lets them move between the two mid-attempt:
+
+- **"I'll do it myself"** — the task, a ladder of `.hint`s that get more specific with each press,
+  and a `.reveal` holding the answer.
+- **"Guide me"** — `.pstep` steps revealed one at a time, each a checkable choice with
+  `data-feedback` per option.
+- The engine adds the switch buttons both ways; work is kept when they switch, so neither route is a
+  dead end. Full markup is documented in `assets/hub.js` above `initPractice()`.
+
+Write hints as a real ladder: nudge → narrow it down → almost tell them. A `.pstep-hint` may contain
+`{step1}`, `{step2}`… which the engine replaces with the answer to that step, so help refers to what
+they've already worked out. Those placeholders always resolve to the **correct** answer, so a hint
+can safely build on them even if the learner got that step wrong.
 
 ## Verify before you finish
 - Serve locally with `python -m http.server 8791` from the repo root.

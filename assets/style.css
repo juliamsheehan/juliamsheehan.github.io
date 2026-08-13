@@ -446,6 +446,100 @@ tr:hover td { background: var(--accent-soft); }
 /* No-JS: the tracker relies on script, so hide it until enhanced */
 .quiz-progress[hidden] { display: none; }
 
+/* ---- Practice blocks (attempt it solo or guided, switch any time) ---- */
+.practice {
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--accent-2);
+  background: var(--bg-elev);
+  border-radius: var(--radius-sm);
+  padding: 1.1rem 1.2rem 1.2rem;
+  margin: 1.4rem 0;
+  box-shadow: var(--shadow);
+}
+.practice-kicker {
+  display: block;
+  font-weight: 800; font-size: .74rem; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--accent-2); margin-bottom: .3rem;
+}
+.practice-task { color: var(--ink); font-weight: 700; margin: 0 0 .9rem; }
+.practice-choose { display: flex; flex-wrap: wrap; gap: .6rem; }
+/* An author `display` beats the UA's [hidden] rule, so restate it for anything
+   the engine hides by setting .hidden — otherwise it stays on screen. */
+.practice-choose[hidden], .practice-switch[hidden] { display: none; }
+.practice-mode {
+  font: inherit; font-weight: 700; font-size: .95rem;
+  color: var(--ink); background: var(--card);
+  border: 1px solid var(--border); border-radius: 999px;
+  padding: .55rem 1.1rem; cursor: pointer;
+  transition: border-color .12s ease, background .12s ease;
+}
+.practice-mode:hover { border-color: var(--accent-2); background: var(--accent-soft); }
+.practice-mode:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+
+/* Switch tracks — deliberately quiet, but always there */
+.practice-switch {
+  display: inline-block; margin-top: 1rem;
+  font: inherit; font-size: .88rem; font-weight: 700;
+  color: var(--ink-soft); background: transparent;
+  border: 1px dashed var(--border); border-radius: 999px;
+  padding: .35rem .9rem; cursor: pointer;
+}
+.practice-switch:hover { border-style: solid; border-color: var(--accent-2); color: var(--accent-2); }
+.practice-switch:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+
+/* Hint ladder */
+.hint-btn {
+  font: inherit; font-size: .9rem; font-weight: 700;
+  color: var(--accent); background: transparent;
+  border: 1px solid var(--accent); border-radius: 999px;
+  padding: .4rem 1rem; cursor: pointer; margin-bottom: .6rem;
+}
+.hint-btn:hover:not(:disabled) { background: var(--accent-soft); }
+.hint-btn:disabled { color: var(--ink-faint); border-color: var(--border); cursor: default; }
+.hint-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.hint-list { margin: 0 0 .6rem; padding-left: 1.2rem; }
+.hint-list .hint {
+  font-size: .93rem; color: var(--ink-soft);
+  margin: .35rem 0; padding-left: .2rem;
+}
+.hint-list .hint::marker { color: var(--accent); font-weight: 700; }
+
+/* Guided steps */
+.practice-steps { list-style: none; margin: .2rem 0 0; padding: 0; counter-reset: pstep; }
+.pstep {
+  counter-increment: pstep;
+  border-left: 3px solid var(--border);
+  padding: .2rem 0 .9rem 1rem;
+  margin-bottom: .4rem;
+}
+.pstep.answered { border-left-color: var(--ifthen); }
+.pstep-q { color: var(--ink); font-weight: 700; margin: 0 0 .6rem; }
+.pstep-q::before {
+  content: "Step " counter(pstep);
+  display: block; font-size: .72rem; font-weight: 800;
+  letter-spacing: .05em; text-transform: uppercase;
+  color: var(--ink-faint); margin-bottom: .15rem;
+}
+.pstep-hint {
+  margin: .6rem 0 0; padding: .5rem .75rem;
+  font-size: .9rem; color: var(--ink-soft);
+  background: var(--accent-soft); border-radius: var(--radius-sm);
+}
+.pstep-hint::before { content: "💡 "; }
+
+/* ---- Spaced-review nudge ---- */
+.refresher {
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--accent-2);
+  background: var(--bg-elev);
+  border-radius: var(--radius-sm);
+  padding: .9rem 1.1rem; margin: 1.4rem 0;
+}
+.refresher .refresh-line { margin: 0 0 .6rem; font-size: .95rem; color: var(--ink-soft); }
+.refresher .refresh-line b { color: var(--ink); }
+.refresher .refresh-go { font-size: .9rem; padding: .45rem 1rem; }
+.refresher[hidden] { display: none; }
+
 /* ---- Reveal (styled native details/summary) ---- */
 .reveal {
   border: 1px solid var(--border);
