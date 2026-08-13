@@ -365,9 +365,16 @@
           picked[si + 1] = key.getAttribute("data-label") || key.textContent.trim();
           fb.hidden = false;
           fb.className = "quiz-feedback " + (correct ? "right" : "wrong");
-          fb.textContent = correct ? "✓ " : "✕ ";
+          fb.textContent = correct ? "✓" : "✕";
+          // Same treatment as the quizzes: verdict stays bold and coloured, the
+          // explanation reads as prose. A whole bold green sentence is a wall.
           var note = opt.getAttribute("data-feedback");
-          if (note) fb.appendChild(document.createTextNode(note));
+          if (note) {
+            var span = document.createElement("span");
+            span.className = "qf-note";
+            span.textContent = " " + note;
+            fb.appendChild(span);
+          }
         };
         step._showHint = function () {
           if (!hint) return;
