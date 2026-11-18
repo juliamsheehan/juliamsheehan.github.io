@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<title>Fic Library</title>
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png"><meta name="theme-color" content="#990000">
+<style>
+:root{--bg:#fafaf7;--fg:#222;--card:#fff;--mut:#666;--ac:#990000;--bd:#d8d6cf;--in:#efede6;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#16161a;--fg:#e6e4df;--card:#202026;--mut:#9a98a0;--ac:#ff7b7b;--bd:#35353d;--in:#2a2a31;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#16161a;--fg:#e6e4df;--card:#202026;--mut:#9a98a0;--ac:#ff7b7b;--bd:#35353d;--in:#2a2a31;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.4 system-ui,-apple-system,Segoe UI,sans-serif}
+#app{max-width:860px;margin:0 auto;padding:10px}
+button,select,input{font:inherit;color:var(--fg);background:var(--in);border:1px solid var(--bd);border-radius:6px;padding:7px 11px}
+button{cursor:pointer}button:disabled{opacity:.4}button.p{background:var(--ac);color:var(--bg);border-color:var(--ac)}
+input[type=text],input[type=password],input[type=search]{width:100%}
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0}.grow{flex:1;min-width:120px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:12px;margin:10px 0}
+.card h3{margin:0 0 2px;font-size:1.1em;color:var(--ac)}.mut{color:var(--mut);font-size:.88em}
+.tag{display:inline-block;background:var(--in);border:1px solid var(--bd);border-radius:12px;padding:1px 9px;margin:2px 3px 2px 0;font-size:.82em;cursor:pointer}
+.tag.x{border-color:var(--ac);color:var(--ac)}
+.badge{font-size:.78em;padding:1px 7px;border-radius:10px;background:var(--ac);color:var(--bg)}
+details{border-top:1px solid var(--bd);padding:4px 0}summary{cursor:pointer;font-weight:600;padding:5px 0}
+label.ck{display:flex;gap:8px;padding:4px 0;align-items:flex-start}label.ck input{margin-top:3px;flex:none}
+.fp{display:grid;grid-template-columns:1fr;gap:0 18px}@media(min-width:700px){.fp{grid-template-columns:1fr 1fr}}
+.lock{text-align:center;max-width:320px;margin:20vh auto 0}.lock input{margin:8px 0}
+.ov{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;z-index:9;padding:16px}
+.md{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:16px;width:100%;max-width:420px;max-height:85vh;overflow:auto}
+.tb{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;margin:8px 0}
+.panel{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:10px;margin:6px 0;display:flex;gap:6px;flex-wrap:wrap}
+.body{font-family:var(--ff);font-size:var(--fs);line-height:var(--lh);padding:6px 2px;overflow-wrap:anywhere}
+.body p{margin:0 0 .9em}.body[contenteditable=true]{outline:2px dashed var(--ac);padding:8px;border-radius:6px}
+.note{background:var(--in);border-radius:6px;padding:8px 12px;margin:10px 0;font-size:.92em}
+.ix button{display:block;width:100%;text-align:left;margin:4px 0}
+h1.t{font-size:1.4em;text-align:center;margin:10px 0 0}.c{text-align:center}
+</style></head><body><div id="app"></div>
+<script>
+const $=(s,e=document)=>e.querySelector(s);
+const h=(t,a={},...c)=>{if(a==null)a={};else if(typeof a!='object'||a instanceof Node||Array.isArray(a)){c.unshift(a);a={}}const e=document.createElement(t);for(const k in a){if(a[k]===false||a[k]==null)continue;k.startsWith('on')||k=='innerHTML'?e[k]=a[k]:k=='class'?e.className=a[k]:e.setAttribute(k,a[k])}e.append(...c.flat().filter(x=>x!=null&&x!==false));return e};
+const ls=(k,v)=>{try{return v===undefined?localStorage.getItem(k):localStorage.setItem(k,v)}catch(e){}};
+const app=$('#app');
+const CATS=['Ratings','Warnings','Categories','Fandoms','Characters','Relationships','Tags'],LBL={Tags:'Additional Tags'};
+let db,W=[],COLS=[],R=null,SECT=[];
+let S={q:'',sort:'added',dir:-1,comp:'all',inc:new Set(),exc:new Set(),col:'',fo:false,sq:{inc:'',exc:''}};
+let SET=Object.assign({theme:'auto',font:'Georgia,serif',size:19,lh:1.7},JSON.parse(ls('set')||'{}'));
+function applySet(){const r=document.documentElement;SET.theme=='auto'?r.removeAttribute('data-theme'):r.dataset.theme=SET.theme;r.style.setProperty('--ff',SET.font);r.style.setProperty('--fs',SET.size+'px');r.style.setProperty('--lh',SET.lh);ls('set',JSON.stringify(SET))}
+/* ---------- storage ---------- */
+const openDB=()=>new Promise((res,rej)=>{const q=indexedDB.open('ficlib',1);q.onupgradeneeded=()=>['works','text','cols'].forEach(n=>q.result.createObjectStore(n,{keyPath:'id'}));q.onsuccess=()=>{db=q.result;res()};q.onerror=rej});
+const tx=(s,m,f)=>new Promise((res,rej)=>{const t=db.transaction(s,m),q=f(t.objectStore(s));t.oncomplete=()=>res(q&&q.result);t.onerror=()=>rej(t.error)});
+const put=(s,v)=>tx(s,'readwrite',o=>o.put(v)),get=(s,k)=>tx(s,'readonly',o=>o.get(k)),all=s=>tx(s,'readonly',o=>o.getAll()),del=(s,k)=>tx(s,'readwrite',o=>o.delete(k));
+/* ---------- lock ---------- */
+const sha=async(p,s)=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s+p)))].map(b=>b.toString(16).padStart(2,'0')).join('');
+function lockScreen(){const p=JSON.parse(ls('pw')||'null'),i=h('input',{type:'password',placeholder:'Password'}),i2=!p&&h('input',{type:'password',placeholder:'Confirm password'}),m=h('p',{class:'mut'});
+ const go=async()=>{if(p){if(await sha(i.value,p.s)==p.h)start();else m.textContent='Wrong password.'}else{if(i.value.length<4)m.textContent='Use at least 4 characters.';else if(i.value!=i2.value)m.textContent='Passwords don’t match.';else{const s=crypto.randomUUID();ls('pw',JSON.stringify({s,h:await sha(i.value,s)}));start()}}};
+ const k=e=>{if(e.key=='Enter')go()};i.onkeydown=k;if(i2)i2.onkeydown=k;
+ app.replaceChildren(h('div',{class:'lock'},h('h1','📚 Fic Library'),h('p',p?'Enter your password':'Create a password to protect your library'),i,i2,m,h('button',{class:'p',onclick:go},p?'Unlock':'Set password')))}
+/* ---------- import / parse ---------- */
+function clean(el){el.querySelectorAll('script,iframe,object,embed,style,link').forEach(x=>x.remove());el.querySelectorAll('*').forEach(x=>[...x.attributes].forEach(a=>{if(/^on/i.test(a.name)||/^\s*javascript:/i.test(a.value))x.removeAttribute(a.name)}));el.querySelectorAll('p').forEach(p=>{if(!p.textContent.replace(/\u00a0/g,' ').trim()&&!p.children.length)p.remove()});return el.innerHTML}
+function parse(txt,name){
+ const d=new DOMParser().parseFromString(txt,'text/html'),url=(d.querySelector('#preface a[href*="/works/"]')||{}).href||'';
+ const id=(url.match(/works\/(\d+)/)||[])[1]||'f'+name+txt.length,tags={},st={};let lang='';
+ d.querySelectorAll('dl.tags dt').forEach(dt=>{const k=dt.textContent.toLowerCase(),dd=dt.nextElementSibling;if(!dd)return;
+  if(k.startsWith('stats')){for(const m of dd.textContent.matchAll(/(Published|Updated|Words|Chapters|Comments|Kudos|Bookmarks|Hits):\s*(\S+)/g))st[m[1]]=m[2]}
+  else if(k.startsWith('lang'))lang=dd.textContent.trim();
+  else{const c=k.startsWith('rat')?'Ratings':k.startsWith('arch')?'Warnings':k.startsWith('cat')?'Categories':k.startsWith('fan')?'Fandoms':k.startsWith('rel')?'Relationships':k.startsWith('char')?'Characters':k.startsWith('add')?'Tags':null;if(c)tags[c]=[...dd.querySelectorAll('a')].map(a=>a.textContent.trim())}});
+ const blk=l=>{const p=[...d.querySelectorAll('#preface .meta > p')].find(p=>p.textContent.trim()==l);return p&&p.nextElementSibling&&p.nextElementSibling.tagName=='BLOCKQUOTE'?clean(p.nextElementSibling):''};
+ const root=d.querySelector('#chapters'),gs=[...root.querySelectorAll(':scope>.meta.group')],ch=[];
+ if(gs.length)gs.forEach(g=>{const c=g.nextElementSibling,e=c&&c.nextElementSibling,n=g.querySelector('blockquote'),eb=e&&e.classList.contains('meta')&&e.querySelector('blockquote');
+  ch.push({title:g.querySelector('h2').textContent.replace(/\s+/g,' ').trim().replace(/^Chapter \d+:?\s*/i,''),notes:n?clean(n):'',html:clean(c),end:eb?clean(eb):''})});
+ else ch.push({title:'',notes:'',html:clean(root.querySelector(':scope>.userstuff')),end:''});
+ const cm=(st.Chapters||'1/1').split('/'),num=s=>+(s||'0').replace(/,/g,'')||0;
+ const title=d.querySelector('.meta h1').textContent.trim(),author=(d.querySelector('.byline')||{textContent:''}).textContent.replace(/^\s*by\s+/,'').trim();
+ const meta={id,title,author,url,tags,lang,summary:blk('Summary'),notes:blk('Notes'),published:st.Published||'',updated:st.Updated||'',words:num(st.Words),offline:true,chap:cm[0]+'/'+cm[1],nch:ch.length,complete:cm[1]!='?'&&cm[0]==cm[1],added:Date.now(),last:0};
+ meta.q=[title,author,meta.summary.replace(/<[^>]+>/g,' '),lang,...Object.values(tags).flat()].join(' \n').toLowerCase();
+ return{meta,ch}}
+async function load(){W=await all('works');COLS=await all('cols')}
+async function imp(files){let n=0,bad=[];
+ for(const f of files){try{const t=await f.text();
+  if(/\.json$/i.test(f.name)){const j=JSON.parse(t);for(const w of j.works)await put('works',w);for(const x of j.text)await put('text',x);for(const c of j.cols||[])await put('cols',c);n+=j.works.length}
+  else{const{meta,ch}=parse(t,f.name),old=W.find(x=>x.id==meta.id);if(old){meta.added=old.added;meta.last=old.last}await put('works',meta);await put('text',{id:meta.id,ch});n++}}catch(e){bad.push(f.name)}}
+ await load();draw();modal(h('p',`Imported ${n} work${n==1?'':'s'}.`+(bad.length?` Couldn’t read: ${bad.join(', ')}`:'')))}
+async function exp(){const f=new File([JSON.stringify({v:1,works:W,text:await all('text'),cols:COLS})],'fic-library-backup.json',{type:'application/json'});
+ try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}}catch(e){}
+ h('a',{href:URL.createObjectURL(f),download:f.name}).click()}
+/* ---------- github sync ---------- */
+const GH=()=>JSON.parse(ls('gh')||'null');
+const b64=s=>{const b=new TextEncoder().encode(s);let o='';for(let i=0;i<b.length;i+=8192)o+=String.fromCharCode(...b.subarray(i,i+8192));return btoa(o)};
+const hs=async s=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].slice(0,8).map(b=>b.toString(16).padStart(2,'0')).join('');
+async function gh(path,o={}){const g=GH(),m=o.method||'GET';
+ const r=await fetch(`https://api.github.com/repos/${g.repo}/contents/${path}${m=='GET'?'?ref='+encodeURIComponent(g.branch||'main'):''}`,{method:m,body:o.body&&JSON.stringify(o.body),headers:{Authorization:'Bearer '+g.token,Accept:o.raw?'application/vnd.github.raw+json':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'}});
+ if(r.status==404&&m=='GET')return null;if(!r.ok)throw new Error(r.status+(r.status==401||r.status==403||r.status==404?' – check the repo name and token permissions':''));
+ return o.raw?r.text():r.json()}
+async function ghPush(only,say=()=>{}){const g=GH(),map=JSON.parse(ls('syncmap')||'{}'),sha={};((await gh('works'))||[]).forEach(f=>sha[f.name]=f.sha);
+ const ws=W.filter(w=>off(w)&&(!only||w.id==only));let n=0,up=0;
+ for(const w of ws){say(`Checking ${++n}/${ws.length}: ${w.title}`);const t=await get('text',w.id);if(!t)continue;
+  const body=JSON.stringify({meta:{...w,last:0},ch:t.ch}),f=w.id+'.json',x=await hs(body);if(map[w.id]==x&&sha[f])continue;
+  say(`Uploading ${n}/${ws.length}: ${w.title}`);await gh('works/'+f,{method:'PUT',body:{message:'Update '+w.title,content:b64(body),branch:g.branch||'main',sha:sha[f]}});map[w.id]=x;up++;ls('syncmap',JSON.stringify(map))}
+ if(!only){const cf=await gh('collections.json');if(COLS.length||cf)await gh('collections.json',{method:'PUT',body:{message:'Update collections',content:b64(JSON.stringify(COLS)),branch:g.branch||'main',sha:cf&&cf.sha}})}
+ return `Done. ${up} new or changed work${up==1?'':'s'} uploaded.`}
+async function ghPull(only,say=()=>{}){let fs=(await gh('works'))||[];if(only)fs=fs.filter(f=>f.name==only+'.json');if(!fs.length)throw new Error('no copy found on GitHub');let n=0;
+ for(const f of fs){say(`Restoring ${++n}/${fs.length}`);const j=JSON.parse(await gh('works/'+f.name,{raw:true})),old=W.find(x=>x.id==j.meta.id);j.meta.offline=true;j.meta.last=old?old.last||0:0;if(old)j.meta.added=old.added;await put('works',j.meta);await put('text',{id:j.meta.id,ch:j.ch})}
+ if(!only){const c=await gh('collections.json',{raw:true});if(c)for(const x of JSON.parse(c))await put('cols',x)}
+ await load();return `Done. ${n} work${n==1?'':'s'} restored.`}
+function ghUI(){const g=GH()||{},sty='margin:4px 0',r=h('input',{type:'text',style:sty,placeholder:'owner/repo, e.g. juliamsheehan/fic-backup',value:g.repo||''}),b=h('input',{type:'text',style:sty,placeholder:'Branch (default: main)',value:g.branch||''}),t=h('input',{type:'password',style:sty,placeholder:'Fine-grained access token',value:g.token||''}),s=h('p',{class:'mut'});
+ const run=f=>async()=>{ls('gh',JSON.stringify({repo:r.value.trim(),branch:b.value.trim()||'main',token:t.value.trim()}));if(!r.value.trim()||!t.value.trim()){s.textContent='Enter the repo and token first.';return}
+  try{s.textContent='Working…';s.textContent=await f(x=>s.textContent=x)}catch(e){s.textContent='Failed: '+e.message}};
+ modal(h('h3','GitHub sync'),h('p',{class:'mut'},'Use a PRIVATE repo. The token is stored in this browser only. Sync works from the GitHub Pages copy of the app, not the preview.'),r,b,t,
+  h('div',{class:'row'},h('button',{class:'p',onclick:run(say=>ghPush(null,say))},'Push to GitHub'),h('button',{onclick:run(say=>ghPull(null,say).then(m=>{draw();return m}))},'Restore all from GitHub')),s,
+  h('div',{class:'row'},h('button',{onclick:()=>{ls('gh','');ls('syncmap','');r.value=b.value=t.value='';s.textContent='Disconnected and token removed from this browser.'}},'Disconnect')))}
+/* ---------- helpers ---------- */
+function modal(...c){const o=h('div',{class:'ov',onclick:e=>e.target==o&&o.remove()},h('div',{class:'md'},...c,h('div',{class:'row'},h('button',{onclick:()=>o.remove()},'Close'))));document.body.append(o);return o}
+const two=(label,fn)=>{const b=h('button',{onclick:()=>{if(b.dataset.a){fn()}else{b.dataset.a=1;b.textContent='Tap again to confirm';setTimeout(()=>{delete b.dataset.a;b.textContent=label},3000)}}},label);return b};
+function settings(){const sel=(k,opts)=>h('select',{style:k=='font'?'font-family:'+SET.font:null,onchange:e=>{SET[k]=e.target.value;if(k=='font')e.target.style.fontFamily=SET.font;applySet()}},opts.map(([v,t])=>h('option',{value:v,selected:SET[k]==v,style:k=='font'?'font-family:'+v:null},t)));
+ const rg=(k,min,max,step)=>{const s=h('b',{},''+SET[k]),st=d=>()=>{SET[k]=Math.round(Math.min(max,Math.max(min,SET[k]+d*step))*10)/10;s.textContent=SET[k];applySet()};return h('div',{class:'row'},h('button',{onclick:st(-1)},'−'),s,h('button',{onclick:st(1)},'+'))};
+ modal(h('h3','Appearance & reading'),h('p','Theme'),sel('theme',[['auto','Match device'],['light','Light'],['dark','Dark']]),h('p','Font'),
+  sel('font',[['Georgia,serif','Georgia (serif)'],['"Times New Roman",Times,serif','Times (serif)'],['system-ui,-apple-system,sans-serif','System sans'],['Verdana,Geneva,sans-serif','Verdana'],['"Courier New",monospace','Monospace']]),
+  h('p','Text size'),rg('size',14,30,1),h('p','Line spacing'),rg('lh',1.2,2.4,.1),h('div',{class:'row'},h('button',{onclick:ghUI},'GitHub sync'),h('button',{onclick:()=>{exp()}},'Export backup'),h('button',{onclick:()=>{R=null;lockScreen()}},'Lock now')))}
+/* ---------- library ---------- */
+const off=w=>w.offline!==false;
+const hasTag=(w,k)=>{const i=k.indexOf('|');return(w.tags[k.slice(0,i)]||[]).includes(k.slice(i+1))};
+function filtered(){const terms=S.q.toLowerCase().split(/\s+/).filter(Boolean),col=COLS.find(c=>c.id==S.col);
+ let r=W.filter(w=>terms.every(t=>w.q.includes(t))&&(S.comp=='all'||(S.comp=='c')==w.complete)&&(!col||col.works.includes(w.id))&&[...S.inc].every(k=>hasTag(w,k))&&![...S.exc].some(k=>hasTag(w,k)));
+ const key={added:'added',words:'words',hits:'hits',kudos:'kudos',updated:'updated',title:'title'}[S.sort];
+ return r.sort((a,b)=>(a[key]>b[key]?1:a[key]<b[key]?-1:0)*S.dir)}
+function facets(){const f={};CATS.forEach(c=>f[c]={});W.forEach(w=>CATS.forEach(c=>(w.tags[c]||[]).forEach(t=>f[c][t]=(f[c][t]||0)+1)));return f}
+function section(mode){const other=mode=='inc'?'exc':'inc',F=facets(),chips=h('div'),lists=h('div'),
+ box=h('div',{},h('h3',mode=='inc'?'Include':'Exclude'),h('input',{type:'search',placeholder:'Search any tag, fandom, character, rating…',value:S.sq[mode],oninput:e=>{S.sq[mode]=e.target.value;box.refresh()}}),chips,lists);
+ box.refresh=()=>{const q=S.sq[mode].toLowerCase().trim();
+  chips.replaceChildren(...[...S[mode]].map(k=>h('span',{class:'tag x',onclick:()=>{S[mode].delete(k);sync()}},k.slice(k.indexOf('|')+1)+' ✕')));
+  lists.replaceChildren(...CATS.map(c=>{const e=Object.entries(F[c]).filter(([t])=>!q||t.toLowerCase().includes(q)).sort((a,b)=>b[1]-a[1]).slice(0,q?60:30);if(!e.length)return null;
+   return h('details',{open:!!q},h('summary',LBL[c]||c),e.map(([t,n])=>{const k=c+'|'+t;return h('label',{class:'ck'},h('input',{type:'checkbox',checked:S[mode].has(k),onchange:ev=>{ev.target.checked?(S[mode].add(k),S[other].delete(k)):S[mode].delete(k);sync()}}),`${t} (${n})`)}))}))};
+ SECT.push(box);box.refresh();return box}
+function sync(){SECT.forEach(b=>b.refresh());list()}
+function lib(){SECT=[];
+ const cs=h('select',{onchange:e=>{S.col=e.target.value;draw()}},h('option',{value:''},'All works'),COLS.map(c=>h('option',{value:c.id,selected:S.col==c.id},`${c.name} (${c.works.length})`)));
+ const fp=h('div',{class:'card',style:S.fo?'':'display:none'},
+  h('div',{class:'row'},h('b','Status:'),[['all','All works'],['c','Complete only'],['w','In progress only']].map(([v,t])=>h('label',{class:'ck'},h('input',{type:'radio',name:'cp',checked:S.comp==v,onchange:()=>{S.comp=v;list()}}),t))),
+  h('div',{class:'fp'},section('inc'),section('exc')));
+ const fi=h('input',{type:'file',accept:'.html,.htm,.json',multiple:true,style:'display:none',onchange:e=>imp([...e.target.files])});
+ app.replaceChildren(h('h1',{class:'t'},'📚 Fic Library'),
+  h('div',{class:'row'},h('input',{type:'search',class:'grow',placeholder:'Search everything: title, author, tags, summary…',value:S.q,oninput:e=>{S.q=e.target.value;list()}})),
+  h('div',{class:'row'},h('button',{class:'p',onclick:()=>fi.click()},'＋ Upload fics'),fi,h('button',{onclick:()=>{S.fo=!S.fo;fp.style.display=S.fo?'':'none'}},'Filters'),
+   h('select',{onchange:e=>{S.sort=e.target.value;list()}},[['added','Date added'],['words','Word count'],['updated','Date updated'],['title','Title']].map(([v,t])=>h('option',{value:v,selected:S.sort==v},t))),
+   h('button',{onclick:e=>{S.dir*=-1;e.target.textContent=S.dir<0?'↓ High→Low':'↑ Low→High';list()}},S.dir<0?'↓ High→Low':'↑ Low→High'),h('button',{onclick:settings},'Aa ⚙')),
+  fp,h('div',{class:'row'},cs,h('button',{onclick:newCol},'＋ Collection'),S.col&&two('Delete collection',async()=>{await del('cols',S.col);S.col='';await load();draw()})),
+  h('div',{id:'cnt',class:'mut'}),h('div',{id:'res'}));list()}
+function list(){const ws=filtered();$('#cnt').textContent=`${ws.length} of ${W.length} works`+(W.length?'':' — tap “Upload fics” to add your AO3 HTML downloads.');
+ $('#res').replaceChildren(...ws.map(w=>h('div',{class:'card'},h('h3',w.title),h('div',{class:'mut'},'by '+w.author+' · '+(w.tags.Fandoms||[]).join(', ')),
+  h('div',{class:'mut'},`${w.words.toLocaleString()} words · Chapters ${w.chap} `,h('span',{class:'badge'},w.complete?'Complete':'In progress'),' ',h('span',{class:'badge',style:off(w)?'':'background:var(--mut)'},off(w)?'✓ Available offline':'Archived · online only'),' · added '+new Date(w.added).toISOString().slice(0,10)),
+  h('div',{},[...(w.tags.Relationships||[]),...(w.tags.Characters||[]).slice(0,4),...(w.tags.Tags||[]).slice(0,6)].map(t=>h('span',{class:'tag',onclick:()=>{const c=CATS.find(c=>(w.tags[c]||[]).includes(t));S.inc.add(c+'|'+t);S.fo=true;draw()}},t))),
+  w.summary&&h('div',{class:'mut',style:'max-height:5.4em;overflow:hidden',innerHTML:w.summary}),
+  h('div',{class:'row'},off(w)?h('button',{class:'p',onclick:()=>openWork(w.id)},w.last?`Continue (ch. ${w.last+1})`:'Read'):(w.url?h('a',{href:w.url,target:'_blank',rel:'noopener'},h('button',{},'Open on AO3')):null),!off(w)&&GH()&&h('button',{class:'p',onclick:async e=>{e.target.textContent='Restoring…';try{await ghPull(w.id);draw()}catch(x){e.target.textContent='Failed: '+x.message}}},'Restore from GitHub'),h('button',{onclick:()=>colsFor(w)},'Collections'),off(w)&&two('Archive',async()=>{if(GH()){try{await ghPush(w.id)}catch(e){modal(h('p','Not archived: this work couldn’t be backed up to GitHub first ('+e.message+').'));return}}await del('text',w.id);w.offline=false;await put('works',w);draw()}),two('Delete',async()=>{await del('works',w.id);await del('text',w.id);for(const c of COLS){c.works=c.works.filter(x=>x!=w.id);await put('cols',c)}await load();draw()})))))}
+function newCol(){const i=h('input',{type:'text',placeholder:'Collection name'});const m=modal(h('h3','New collection'),i,h('div',{class:'row'},h('button',{class:'p',onclick:async()=>{if(!i.value.trim())return;await put('cols',{id:'c'+Date.now(),name:i.value.trim(),works:[]});await load();m.remove();draw()}},'Create')))}
+function colsFor(w){const m=modal(h('h3','Collections'),COLS.length?COLS.map(c=>h('label',{class:'ck'},h('input',{type:'checkbox',checked:c.works.includes(w.id),onchange:async e=>{c.works=e.target.checked?[...c.works,w.id]:c.works.filter(x=>x!=w.id);await put('cols',c)}}),c.name)):h('p',{class:'mut'},'No collections yet.'),h('div',{class:'row'},h('button',{onclick:()=>{m.remove();newCol()}},'＋ New collection')));m.querySelector('.row:last-child button:last-child').onclick=()=>{m.remove();load().then(draw)};}
+/* ---------- reader ---------- */
+async function openWork(id){const w=W.find(x=>x.id==id),t=await get('text',id);R={w,c:t.ch,i:Math.min(w.last||0,t.ch.length-1),all:false,panel:null,idx:false,edit:false};scrollTo(0,0);draw()}
+async function go(n){if(R.edit)await save();R.i=n;R.panel=null;R.idx=false;R.w.last=n;await put('works',R.w);draw();scrollTo(0,0)}
+async function save(){const b=$('.body[contenteditable]');if(b)R.c[R.i].html=b.innerHTML;await put('text',{id:R.w.id,ch:R.c});R.edit=false;draw()}
+function reader(){const{w,c,i}=R,B=(t,f,d,cl)=>h('button',{onclick:f,disabled:d,class:cl},t);
+ const nav=pos=>{const multi=c.length>1,row=h('div',{class:'tb'},
+   pos=='top'&&B('‹ Library',async()=>{if(R.edit)await save();R=null;await load();draw()}),pos=='bot'&&B('↑ top',()=>scrollTo({top:0,behavior:'smooth'})),
+   multi&&B(R.all?'Chapter by chapter':'Entire work',()=>{R.all=!R.all;R.idx=false;R.edit=false;draw();scrollTo(0,0)}),
+   multi&&!R.all&&B('← Prev',()=>go(i-1),i==0),multi&&!R.all&&B('Next →',()=>go(i+1),i==c.length-1),
+   multi&&B('Chapter Index '+(R.panel==pos?'↑':'↓'),()=>{R.panel=R.panel==pos?null:pos;draw()}),
+   !R.all&&B(R.edit?'Save edits':'Edit',R.edit?save:()=>{R.edit=true;draw()},false,R.edit?'p':''),pos=='top'&&B('Aa ⚙',settings));
+  const out=[row];
+  if(R.panel==pos){const s=h('select',{class:'grow'},c.map((x,n)=>h('option',{value:n,selected:n==i},`${n+1}. ${x.title||'Chapter '+(n+1)}`)));out.push(h('div',{class:'panel'},s,B('go',()=>go(+s.value)),B('full-page index',()=>{R.idx=true;R.panel=null;draw();scrollTo(0,0)})))}
+  return out};
+ const nb=(x,k,l)=>x[k]&&h('div',{class:'note'},h('div',{class:'row'},h('b',{class:'grow'},l),two('Delete',async()=>{if(R.edit){const b=$('.body[contenteditable=true]');if(b)R.c[R.i].html=b.innerHTML}x[k]='';await put('text',{id:R.w.id,ch:R.c});draw()})),h('div',{innerHTML:x[k]}));
+ const chap=(x,n)=>[c.length>1&&h('h2',{class:'c'},`Chapter ${n+1}${x.title?': '+x.title:''}`),nb(x,'notes','Chapter notes'),h('div',{class:'body',contenteditable:R.edit?'true':'false',innerHTML:x.html}),nb(x,'end','Chapter end notes')];
+ const info=h('details',{},h('summary','Summary, tags & notes'),h('div',{class:'note',innerHTML:w.summary||'<i>No summary</i>'}),w.notes&&h('div',{class:'note',innerHTML:'<b>Notes</b>'+w.notes}),
+  Object.keys(w.tags).map(k=>h('p',{class:'mut'},h('b',(LBL[k]||k)+': '),w.tags[k].join(', '))),h('p',{class:'mut'},`Published ${w.published} · Updated ${w.updated||'—'} · ${w.words.toLocaleString()} words · Chapters ${w.chap}`));
+ const body=R.idx?[h('h2',{class:'c'},'Chapter index'),h('div',{class:'ix'},c.map((x,n)=>B(`${n+1}. ${x.title||'Chapter '+(n+1)}`,()=>{R.all=false;go(n)})))]:R.all?c.map((x,n)=>chap(x,n)):chap(c[i],i);
+ const y=scrollY;app.replaceChildren(...nav('top'),h('h1',{class:'t'},w.title),h('div',{class:'c mut'},'by '+w.author),info,...body.flat(),...nav('bot'));return y}
+function draw(){const y=scrollY;R?reader():lib();applySet();if(R&&!R.fresh)scrollTo(0,y)}
+async function start(){try{await openDB();await load()}catch(e){app.textContent='Storage is unavailable in this browser.';return}applySet();draw()}
+try{if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js")}catch(e){}
+applySet();lockScreen();
+</script></body></html>
