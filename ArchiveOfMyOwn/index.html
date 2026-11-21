@@ -76,8 +76,8 @@ function parse(txt,name){
 async function load(){W=await all('works');COLS=await all('cols')}
 async function imp(files){let n=0,bad=[];
  for(const f of files){try{const t=await f.text();
-  if(/\.json$/i.test(f.name)){const j=JSON.parse(t);for(const w of j.works)await put('works',w);for(const x of j.text)await put('text',x);for(const c of j.cols||[])await put('cols',c);n+=j.works.length}
-  else{const{meta,ch}=parse(t,f.name),old=W.find(x=>x.id==meta.id);if(old){meta.added=old.added;meta.last=old.last}await put('works',meta);await put('text',{id:meta.id,ch});n++}}catch(e){bad.push(f.name)}}
+  if(/\.json$/i.test(f.name)){const j=JSON.parse(t);for(const w of j.works){await put('works',w);mark(w.id)}for(const x of j.text)await put('text',x);for(const c of j.cols||[])await put('cols',c);n+=j.works.length}
+  else{const{meta,ch}=parse(t,f.name),old=W.find(x=>x.id==meta.id);if(old){meta.added=old.added;meta.last=old.last}await put('works',meta);await put('text',{id:meta.id,ch});mark(meta.id);n++}}catch(e){bad.push(f.name)}}
  await load();draw();modal(h('p',`Imported ${n} work${n==1?'':'s'}.`+(bad.length?` Couldn’t read: ${bad.join(', ')}`:'')))}
 async function exp(){const f=new File([JSON.stringify({v:1,works:W,text:await all('text'),cols:COLS})],'fic-library-backup.json',{type:'application/json'});
  try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}}catch(e){}
@@ -90,22 +90,47 @@ async function gh(path,o={}){const g=GH(),m=o.method||'GET';
  const r=await fetch(`https://api.github.com/repos/${g.repo}/contents/${path}${m=='GET'?'?ref='+encodeURIComponent(g.branch||'main'):''}`,{method:m,body:o.body&&JSON.stringify(o.body),headers:{Authorization:'Bearer '+g.token,Accept:o.raw?'application/vnd.github.raw+json':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'}});
  if(r.status==404&&m=='GET')return null;if(!r.ok)throw new Error(r.status+(r.status==401||r.status==403||r.status==404?' – check the repo name and token permissions':''));
  return o.raw?r.text():r.json()}
+let dirty=new Set(),cd=false,tm,sst='';
+const stat=t=>{sst=t;const e=$('#sst');if(e)e.textContent=t};
+function mark(id,col){const g=GH();if(!g||!g.token||ls('auto')=='0')return;if(id)dirty.add(id);if(col)cd=true;clearTimeout(tm);tm=setTimeout(flush,3000);stat('Sync pending…')}
+async function flush(){const ids=[...dirty],c=cd;dirty.clear();cd=false;try{stat('Syncing to GitHub…');for(const id of ids)await ghPush(id);if(c)await ghCols();stat('Synced '+new Date().toLocaleTimeString())}catch(e){ids.forEach(i=>dirty.add(i));cd=cd||c;stat('Sync failed ('+e.message+'). It will retry after your next change.')}}
+async function ghGet(id){const j=await gh('works/'+id+'.json',{raw:true});if(!j)throw new Error('not found on GitHub');return JSON.parse(j)}
+async function ghIndex(drop){const g=GH(),ix=await gh('index.json'),raw=ix?await gh('index.json',{raw:true}):'[]',names=new Set(((await gh('works'))||[]).map(f=>f.name)),mm={};
+ JSON.parse(raw).forEach(m=>mm[m.id]=m);W.forEach(w=>{if(names.has(w.id+'.json'))mm[w.id]={...w,last:0,offline:false}});if(drop)delete mm[drop];
+ const out=JSON.stringify(Object.values(mm));if(out==raw)return;
+ await gh('index.json',{method:'PUT',body:{message:'Update index',content:b64(out),branch:g.branch||'main',sha:ix&&ix.sha}})}
+async function ghRemove(id){const g=GH(),f=((await gh('works'))||[]).find(x=>x.name==id+'.json');if(f)await gh('works/'+f.name,{method:'DELETE',body:{message:'Delete work',sha:f.sha,branch:g.branch||'main'}});await ghIndex(id);
+ const m=JSON.parse(ls('syncmap')||'{}'),r=JSON.parse(ls('rsha')||'{}');delete m[id];delete r[id];ls('syncmap',JSON.stringify(m));ls('rsha',JSON.stringify(r))}
+async function ghOpen(){const g=GH();if(!g||!g.token||ls('autopull')=='0')return;
+ try{stat('Checking GitHub…');let n=0,u=0;const ixr=await gh('index.json',{raw:true});
+  if(ixr==null)await ghIndex();else{const ix=JSON.parse(ixr),ids=new Set(ix.map(m=>m.id));
+   for(const m of ix)if(!W.some(x=>x.id==m.id)){m.offline=false;m.last=0;m.added=m.added||Date.now();await put('works',m);n++}
+   for(const w of W)if(!off(w)&&!ids.has(w.id))await del('works',w.id)}
+  const fs=(await gh('works'))||[],rs=JSON.parse(ls('rsha')||'{}'),map=JSON.parse(ls('syncmap')||'{}');
+  for(const f of fs){const id=f.name.replace(/\.json$/,''),old=W.find(x=>x.id==id);if(!old||!off(old)||rs[id]==f.sha)continue;
+   const t=await get('text',id);if(!t||map[id]!=await hs(JSON.stringify({meta:{...old,last:0},ch:t.ch})))continue;
+   const j=JSON.parse(await gh('works/'+f.name,{raw:true}));j.meta.offline=true;j.meta.last=old.last||0;j.meta.added=old.added;
+   await put('works',j.meta);await put('text',{id,ch:j.ch});map[id]=await hs(JSON.stringify({meta:{...j.meta,last:0},ch:j.ch}));rs[id]=f.sha;u++}
+  ls('rsha',JSON.stringify(rs));ls('syncmap',JSON.stringify(map));
+  if(!cd){const c=await gh('collections.json',{raw:true});if(c){const rc=JSON.parse(c);for(const x of COLS)if(!rc.some(y=>y.id==x.id))await del('cols',x.id);for(const x of rc)await put('cols',x);ls('colsok','1')}}
+  await load();if(!R)draw();stat(n||u?`Synced: ${n} new in library, ${u} downloaded work${u==1?'':'s'} updated`:'Library up to date')}catch(e){stat('Couldn’t check GitHub ('+e.message+')')}}
+async function ghCols(){const g=GH(),cf=await gh('collections.json');if(!COLS.length&&cf&&!ls('colsok'))return;if(COLS.length||cf){await gh('collections.json',{method:'PUT',body:{message:'Update collections',content:b64(JSON.stringify(COLS)),branch:g.branch||'main',sha:cf&&cf.sha}});ls('colsok','1')}}
 async function ghPush(only,say=()=>{}){const g=GH(),map=JSON.parse(ls('syncmap')||'{}'),sha={};((await gh('works'))||[]).forEach(f=>sha[f.name]=f.sha);
  const ws=W.filter(w=>off(w)&&(!only||w.id==only));let n=0,up=0;
  for(const w of ws){say(`Checking ${++n}/${ws.length}: ${w.title}`);const t=await get('text',w.id);if(!t)continue;
   const body=JSON.stringify({meta:{...w,last:0},ch:t.ch}),f=w.id+'.json',x=await hs(body);if(map[w.id]==x&&sha[f])continue;
-  say(`Uploading ${n}/${ws.length}: ${w.title}`);await gh('works/'+f,{method:'PUT',body:{message:'Update '+w.title,content:b64(body),branch:g.branch||'main',sha:sha[f]}});map[w.id]=x;up++;ls('syncmap',JSON.stringify(map))}
- if(!only){const cf=await gh('collections.json');if(COLS.length||cf)await gh('collections.json',{method:'PUT',body:{message:'Update collections',content:b64(JSON.stringify(COLS)),branch:g.branch||'main',sha:cf&&cf.sha}})}
+  say(`Uploading ${n}/${ws.length}: ${w.title}`);const r=await gh('works/'+f,{method:'PUT',body:{message:'Update '+w.title,content:b64(body),branch:g.branch||'main',sha:sha[f]}});{const rs=JSON.parse(ls('rsha')||'{}');rs[w.id]=r.content.sha;ls('rsha',JSON.stringify(rs))}map[w.id]=x;up++;ls('syncmap',JSON.stringify(map))}
+ await ghIndex();if(!only)await ghCols();
  return `Done. ${up} new or changed work${up==1?'':'s'} uploaded.`}
 async function ghPull(only,say=()=>{}){let fs=(await gh('works'))||[];if(only)fs=fs.filter(f=>f.name==only+'.json');if(!fs.length)throw new Error('no copy found on GitHub');let n=0;
- for(const f of fs){say(`Restoring ${++n}/${fs.length}`);const j=JSON.parse(await gh('works/'+f.name,{raw:true})),old=W.find(x=>x.id==j.meta.id);j.meta.offline=true;j.meta.last=old?old.last||0:0;if(old)j.meta.added=old.added;await put('works',j.meta);await put('text',{id:j.meta.id,ch:j.ch})}
- if(!only){const c=await gh('collections.json',{raw:true});if(c)for(const x of JSON.parse(c))await put('cols',x)}
+ for(const f of fs){say(`Restoring ${++n}/${fs.length}`);const j=JSON.parse(await gh('works/'+f.name,{raw:true})),old=W.find(x=>x.id==j.meta.id);j.meta.offline=true;j.meta.last=old?old.last||0:0;if(old)j.meta.added=old.added;await put('works',j.meta);await put('text',{id:j.meta.id,ch:j.ch});{const m=JSON.parse(ls('syncmap')||'{}'),r=JSON.parse(ls('rsha')||'{}');m[j.meta.id]=await hs(JSON.stringify({meta:{...j.meta,last:0},ch:j.ch}));r[j.meta.id]=f.sha;ls('syncmap',JSON.stringify(m));ls('rsha',JSON.stringify(r))}}
+ if(!only){const c=await gh('collections.json',{raw:true});if(c){for(const x of JSON.parse(c))await put('cols',x);ls('colsok','1')}}
  await load();return `Done. ${n} work${n==1?'':'s'} restored.`}
 function ghUI(){const g=GH()||{},sty='margin:4px 0',r=h('input',{type:'text',style:sty,placeholder:'owner/repo, e.g. juliamsheehan/fic-backup',value:g.repo||''}),b=h('input',{type:'text',style:sty,placeholder:'Branch (default: main)',value:g.branch||''}),t=h('input',{type:'password',style:sty,placeholder:'Fine-grained access token',value:g.token||''}),s=h('p',{class:'mut'});
  const run=f=>async()=>{ls('gh',JSON.stringify({repo:r.value.trim(),branch:b.value.trim()||'main',token:t.value.trim()}));if(!r.value.trim()||!t.value.trim()){s.textContent='Enter the repo and token first.';return}
   try{s.textContent='Working…';s.textContent=await f(x=>s.textContent=x)}catch(e){s.textContent='Failed: '+e.message}};
  modal(h('h3','GitHub sync'),h('p',{class:'mut'},'Use a PRIVATE repo. The token is stored in this browser only. Sync works from the GitHub Pages copy of the app, not the preview.'),r,b,t,
-  h('div',{class:'row'},h('button',{class:'p',onclick:run(say=>ghPush(null,say))},'Push to GitHub'),h('button',{onclick:run(say=>ghPull(null,say).then(m=>{draw();return m}))},'Restore all from GitHub')),s,
+  h('div',{class:'row'},h('button',{class:'p',onclick:run(async()=>{await ghOpen();return sst||'Done.'})},'Connect & load library'),h('button',{onclick:run(say=>ghPush(null,say))},'Push to GitHub'),h('button',{onclick:run(say=>ghPull(null,say).then(m=>{draw();return m}))},'Download everything for offline')),h('label',{class:'ck'},h('input',{type:'checkbox',checked:ls('auto')!='0',onchange:e=>ls('auto',e.target.checked?'1':'0')}),'Push automatically after every change'),h('label',{class:'ck'},h('input',{type:'checkbox',checked:ls('autopull')!='0',onchange:e=>ls('autopull',e.target.checked?'1':'0')}),'Check GitHub for updates when the app opens'),s,
   h('div',{class:'row'},h('button',{onclick:()=>{ls('gh','');ls('syncmap','');r.value=b.value=t.value='';s.textContent='Disconnected and token removed from this browser.'}},'Disconnect')))}
 /* ---------- helpers ---------- */
 function modal(...c){const o=h('div',{class:'ov',onclick:e=>e.target==o&&o.remove()},h('div',{class:'md'},...c,h('div',{class:'row'},h('button',{onclick:()=>o.remove()},'Close'))));document.body.append(o);return o}
@@ -122,58 +147,60 @@ function filtered(){const terms=S.q.toLowerCase().split(/\s+/).filter(Boolean),c
  let r=W.filter(w=>terms.every(t=>w.q.includes(t))&&(S.comp=='all'||(S.comp=='c')==w.complete)&&(!col||col.works.includes(w.id))&&[...S.inc].every(k=>hasTag(w,k))&&![...S.exc].some(k=>hasTag(w,k)));
  const key={added:'added',words:'words',hits:'hits',kudos:'kudos',updated:'updated',title:'title'}[S.sort];
  return r.sort((a,b)=>(a[key]>b[key]?1:a[key]<b[key]?-1:0)*S.dir)}
-function facets(){const f={};CATS.forEach(c=>f[c]={});W.forEach(w=>CATS.forEach(c=>(w.tags[c]||[]).forEach(t=>f[c][t]=(f[c][t]||0)+1)));return f}
-function section(mode){const other=mode=='inc'?'exc':'inc',F=facets(),chips=h('div'),lists=h('div'),
+function facets(ws){const f={};CATS.forEach(c=>f[c]={});ws.forEach(w=>CATS.forEach(c=>(w.tags[c]||[]).forEach(t=>f[c][t]=(f[c][t]||0)+1)));return f}
+function section(mode){const other=mode=='inc'?'exc':'inc',chips=h('div'),lists=h('div'),
  box=h('div',{},h('h3',mode=='inc'?'Include':'Exclude'),h('input',{type:'search',placeholder:'Search any tag, fandom, character, rating…',value:S.sq[mode],oninput:e=>{S.sq[mode]=e.target.value;box.refresh()}}),chips,lists);
- box.refresh=()=>{const q=S.sq[mode].toLowerCase().trim();
+ box.refresh=()=>{const q=S.sq[mode].toLowerCase().trim(),F=facets(filtered());[...S[mode]].forEach(k=>{const i=k.indexOf('|'),c=k.slice(0,i),t=k.slice(i+1);if(F[c]&&!(t in F[c]))F[c][t]=0});
   chips.replaceChildren(...[...S[mode]].map(k=>h('span',{class:'tag x',onclick:()=>{S[mode].delete(k);sync()}},k.slice(k.indexOf('|')+1)+' ✕')));
-  lists.replaceChildren(...CATS.map(c=>{const e=Object.entries(F[c]).filter(([t])=>!q||t.toLowerCase().includes(q)).sort((a,b)=>b[1]-a[1]).slice(0,q?60:30);if(!e.length)return null;
+  lists.replaceChildren(...CATS.map(c=>{const e=Object.entries(F[c]).filter(([t])=>!q||t.toLowerCase().includes(q)).sort((a,b)=>b[1]-a[1]).slice(0,q?60:30);if(!e.length)return document.createDocumentFragment();
    return h('details',{open:!!q},h('summary',LBL[c]||c),e.map(([t,n])=>{const k=c+'|'+t;return h('label',{class:'ck'},h('input',{type:'checkbox',checked:S[mode].has(k),onchange:ev=>{ev.target.checked?(S[mode].add(k),S[other].delete(k)):S[mode].delete(k);sync()}}),`${t} (${n})`)}))}))};
  SECT.push(box);box.refresh();return box}
-function sync(){SECT.forEach(b=>b.refresh());list()}
+function sync(){list()}
 function lib(){SECT=[];
  const cs=h('select',{onchange:e=>{S.col=e.target.value;draw()}},h('option',{value:''},'All works'),COLS.map(c=>h('option',{value:c.id,selected:S.col==c.id},`${c.name} (${c.works.length})`)));
  const fp=h('div',{class:'card',style:S.fo?'':'display:none'},
   h('div',{class:'row'},h('b','Status:'),[['all','All works'],['c','Complete only'],['w','In progress only']].map(([v,t])=>h('label',{class:'ck'},h('input',{type:'radio',name:'cp',checked:S.comp==v,onchange:()=>{S.comp=v;list()}}),t))),
   h('div',{class:'fp'},section('inc'),section('exc')));
  const fi=h('input',{type:'file',accept:'.html,.htm,.json',multiple:true,style:'display:none',onchange:e=>imp([...e.target.files])});
- app.replaceChildren(h('h1',{class:'t'},'📚 Fic Library'),
+ app.replaceChildren(h('h1',{class:'t'},'📚 Fic Library'),h('div',{id:'sst',class:'mut c'},sst),
   h('div',{class:'row'},h('input',{type:'search',class:'grow',placeholder:'Search everything: title, author, tags, summary…',value:S.q,oninput:e=>{S.q=e.target.value;list()}})),
   h('div',{class:'row'},h('button',{class:'p',onclick:()=>fi.click()},'＋ Upload fics'),fi,h('button',{onclick:()=>{S.fo=!S.fo;fp.style.display=S.fo?'':'none'}},'Filters'),
    h('select',{onchange:e=>{S.sort=e.target.value;list()}},[['added','Date added'],['words','Word count'],['updated','Date updated'],['title','Title']].map(([v,t])=>h('option',{value:v,selected:S.sort==v},t))),
    h('button',{onclick:e=>{S.dir*=-1;e.target.textContent=S.dir<0?'↓ High→Low':'↑ Low→High';list()}},S.dir<0?'↓ High→Low':'↑ Low→High'),h('button',{onclick:settings},'Aa ⚙')),
-  fp,h('div',{class:'row'},cs,h('button',{onclick:newCol},'＋ Collection'),S.col&&two('Delete collection',async()=>{await del('cols',S.col);S.col='';await load();draw()})),
+  fp,h('div',{class:'row'},cs,h('button',{onclick:newCol},'＋ Collection'),S.col&&two('Delete collection',async()=>{await del('cols',S.col);mark(0,1);S.col='';await load();draw()})),
   h('div',{id:'cnt',class:'mut'}),h('div',{id:'res'}));list()}
-function list(){const ws=filtered();$('#cnt').textContent=`${ws.length} of ${W.length} works`+(W.length?'':' — tap “Upload fics” to add your AO3 HTML downloads.');
+function list(){SECT.forEach(b=>b.refresh());const ws=filtered();$('#cnt').textContent=`${ws.length} of ${W.length} works`+(W.length?'':' — tap “Upload fics” to add your AO3 HTML downloads.');
  $('#res').replaceChildren(...ws.map(w=>h('div',{class:'card'},h('h3',w.title),h('div',{class:'mut'},'by '+w.author+' · '+(w.tags.Fandoms||[]).join(', ')),
-  h('div',{class:'mut'},`${w.words.toLocaleString()} words · Chapters ${w.chap} `,h('span',{class:'badge'},w.complete?'Complete':'In progress'),' ',h('span',{class:'badge',style:off(w)?'':'background:var(--mut)'},off(w)?'✓ Available offline':'Archived · online only'),' · added '+new Date(w.added).toISOString().slice(0,10)),
+  h('div',{class:'mut'},`${w.words.toLocaleString()} words · Chapters ${w.chap} `,h('span',{class:'badge'},w.complete?'Complete':'In progress'),' ',h('span',{class:'badge',style:off(w)?'':'background:var(--mut)'},off(w)?'✓ Downloaded':'☁ Online only'),' · added '+new Date(w.added).toISOString().slice(0,10)),
   h('div',{},[...(w.tags.Relationships||[]),...(w.tags.Characters||[]).slice(0,4),...(w.tags.Tags||[]).slice(0,6)].map(t=>h('span',{class:'tag',onclick:()=>{const c=CATS.find(c=>(w.tags[c]||[]).includes(t));S.inc.add(c+'|'+t);S.fo=true;draw()}},t))),
   w.summary&&h('div',{class:'mut',style:'max-height:5.4em;overflow:hidden',innerHTML:w.summary}),
-  h('div',{class:'row'},off(w)?h('button',{class:'p',onclick:()=>openWork(w.id)},w.last?`Continue (ch. ${w.last+1})`:'Read'):(w.url?h('a',{href:w.url,target:'_blank',rel:'noopener'},h('button',{},'Open on AO3')):null),!off(w)&&GH()&&h('button',{class:'p',onclick:async e=>{e.target.textContent='Restoring…';try{await ghPull(w.id);draw()}catch(x){e.target.textContent='Failed: '+x.message}}},'Restore from GitHub'),h('button',{onclick:()=>colsFor(w)},'Collections'),off(w)&&two('Archive',async()=>{if(GH()){try{await ghPush(w.id)}catch(e){modal(h('p','Not archived: this work couldn’t be backed up to GitHub first ('+e.message+').'));return}}await del('text',w.id);w.offline=false;await put('works',w);draw()}),two('Delete',async()=>{await del('works',w.id);await del('text',w.id);for(const c of COLS){c.works=c.works.filter(x=>x!=w.id);await put('cols',c)}await load();draw()})))))}
-function newCol(){const i=h('input',{type:'text',placeholder:'Collection name'});const m=modal(h('h3','New collection'),i,h('div',{class:'row'},h('button',{class:'p',onclick:async()=>{if(!i.value.trim())return;await put('cols',{id:'c'+Date.now(),name:i.value.trim(),works:[]});await load();m.remove();draw()}},'Create')))}
-function colsFor(w){const m=modal(h('h3','Collections'),COLS.length?COLS.map(c=>h('label',{class:'ck'},h('input',{type:'checkbox',checked:c.works.includes(w.id),onchange:async e=>{c.works=e.target.checked?[...c.works,w.id]:c.works.filter(x=>x!=w.id);await put('cols',c)}}),c.name)):h('p',{class:'mut'},'No collections yet.'),h('div',{class:'row'},h('button',{onclick:()=>{m.remove();newCol()}},'＋ New collection')));m.querySelector('.row:last-child button:last-child').onclick=()=>{m.remove();load().then(draw)};}
+  h('div',{class:'row'},h('button',{class:'p',onclick:()=>openWork(w.id)},w.last?`Continue (ch. ${w.last+1})`:'Read'),!off(w)&&GH()&&h('button',{onclick:async e=>{e.target.textContent='Saving…';try{await ghPull(w.id);draw()}catch(x){e.target.textContent='Failed: '+x.message}}},'⬇ Save offline'),!off(w)&&w.url&&h('a',{href:w.url,target:'_blank',rel:'noopener'},h('button',{},'Open on AO3')),h('button',{onclick:()=>colsFor(w)},'Collections'),off(w)&&GH()&&two('Remove download',async()=>{try{await ghPush(w.id)}catch(e){modal(h('p','Not removed: this work couldn’t be backed up to GitHub first ('+e.message+').'));return}await del('text',w.id);w.offline=false;await put('works',w);draw()}),two(GH()?'Delete everywhere':'Delete',async()=>{if(GH()){try{await ghRemove(w.id)}catch(e){modal(h('p','Not deleted: couldn’t remove it from GitHub ('+e.message+').'));return}}await del('works',w.id);await del('text',w.id);for(const c of COLS){c.works=c.works.filter(x=>x!=w.id);await put('cols',c)}mark(0,1);await load();draw()})))))}
+function newCol(){const i=h('input',{type:'text',placeholder:'Collection name'});const m=modal(h('h3','New collection'),i,h('div',{class:'row'},h('button',{class:'p',onclick:async()=>{if(!i.value.trim())return;await put('cols',{id:'c'+Date.now(),name:i.value.trim(),works:[]});mark(0,1);await load();m.remove();draw()}},'Create')))}
+function colsFor(w){const m=modal(h('h3','Collections'),COLS.length?COLS.map(c=>h('label',{class:'ck'},h('input',{type:'checkbox',checked:c.works.includes(w.id),onchange:async e=>{c.works=e.target.checked?[...c.works,w.id]:c.works.filter(x=>x!=w.id);await put('cols',c);mark(0,1)}}),c.name)):h('p',{class:'mut'},'No collections yet.'),h('div',{class:'row'},h('button',{onclick:()=>{m.remove();newCol()}},'＋ New collection')));m.querySelector('.row:last-child button:last-child').onclick=()=>{m.remove();load().then(draw)};}
 /* ---------- reader ---------- */
-async function openWork(id){const w=W.find(x=>x.id==id),t=await get('text',id);R={w,c:t.ch,i:Math.min(w.last||0,t.ch.length-1),all:false,panel:null,idx:false,edit:false};scrollTo(0,0);draw()}
+async function openWork(id){const w=W.find(x=>x.id==id);let c,s=false;
+ if(off(w))c=(await get('text',id)).ch;else{try{stat('Loading from GitHub…');c=(await ghGet(id)).ch;s=true;stat('')}catch(e){stat('');modal(h('p','Couldn’t load this work ('+e.message+'). Connect to the internet to read it, or save it offline while you’re connected.'));return}}
+ R={w,c,i:Math.min(w.last||0,c.length-1),all:false,panel:null,idx:false,edit:false,stream:s};scrollTo(0,0);draw()}
 async function go(n){if(R.edit)await save();R.i=n;R.panel=null;R.idx=false;R.w.last=n;await put('works',R.w);draw();scrollTo(0,0)}
-async function save(){const b=$('.body[contenteditable]');if(b)R.c[R.i].html=b.innerHTML;await put('text',{id:R.w.id,ch:R.c});R.edit=false;draw()}
+async function save(){const b=$('.body[contenteditable]');if(b)R.c[R.i].html=b.innerHTML;await put('text',{id:R.w.id,ch:R.c});mark(R.w.id);R.edit=false;draw()}
 function reader(){const{w,c,i}=R,B=(t,f,d,cl)=>h('button',{onclick:f,disabled:d,class:cl},t);
  const nav=pos=>{const multi=c.length>1,row=h('div',{class:'tb'},
    pos=='top'&&B('‹ Library',async()=>{if(R.edit)await save();R=null;await load();draw()}),pos=='bot'&&B('↑ top',()=>scrollTo({top:0,behavior:'smooth'})),
    multi&&B(R.all?'Chapter by chapter':'Entire work',()=>{R.all=!R.all;R.idx=false;R.edit=false;draw();scrollTo(0,0)}),
    multi&&!R.all&&B('← Prev',()=>go(i-1),i==0),multi&&!R.all&&B('Next →',()=>go(i+1),i==c.length-1),
    multi&&B('Chapter Index '+(R.panel==pos?'↑':'↓'),()=>{R.panel=R.panel==pos?null:pos;draw()}),
-   !R.all&&B(R.edit?'Save edits':'Edit',R.edit?save:()=>{R.edit=true;draw()},false,R.edit?'p':''),pos=='top'&&B('Aa ⚙',settings));
+   !R.all&&!R.stream&&B(R.edit?'Save edits':'Edit',R.edit?save:()=>{R.edit=true;draw()},false,R.edit?'p':''),R.stream&&B('⬇ Save offline',async e=>{e.target.textContent='Saving…';try{await ghPull(R.w.id);R.stream=false;R.w=W.find(x=>x.id==R.w.id);draw()}catch(x){e.target.textContent='Failed: '+x.message}}),pos=='top'&&B('Aa ⚙',settings));
   const out=[row];
   if(R.panel==pos){const s=h('select',{class:'grow'},c.map((x,n)=>h('option',{value:n,selected:n==i},`${n+1}. ${x.title||'Chapter '+(n+1)}`)));out.push(h('div',{class:'panel'},s,B('go',()=>go(+s.value)),B('full-page index',()=>{R.idx=true;R.panel=null;draw();scrollTo(0,0)})))}
   return out};
- const nb=(x,k,l)=>x[k]&&h('div',{class:'note'},h('div',{class:'row'},h('b',{class:'grow'},l),two('Delete',async()=>{if(R.edit){const b=$('.body[contenteditable=true]');if(b)R.c[R.i].html=b.innerHTML}x[k]='';await put('text',{id:R.w.id,ch:R.c});draw()})),h('div',{innerHTML:x[k]}));
+ const nb=(x,k,l)=>x[k]&&h('div',{class:'note'},h('div',{class:'row'},h('b',{class:'grow'},l),!R.stream&&two('Delete',async()=>{if(R.edit){const b=$('.body[contenteditable=true]');if(b)R.c[R.i].html=b.innerHTML}x[k]='';await put('text',{id:R.w.id,ch:R.c});mark(R.w.id);draw()})),h('div',{innerHTML:x[k]}));
  const chap=(x,n)=>[c.length>1&&h('h2',{class:'c'},`Chapter ${n+1}${x.title?': '+x.title:''}`),nb(x,'notes','Chapter notes'),h('div',{class:'body',contenteditable:R.edit?'true':'false',innerHTML:x.html}),nb(x,'end','Chapter end notes')];
  const info=h('details',{},h('summary','Summary, tags & notes'),h('div',{class:'note',innerHTML:w.summary||'<i>No summary</i>'}),w.notes&&h('div',{class:'note',innerHTML:'<b>Notes</b>'+w.notes}),
   Object.keys(w.tags).map(k=>h('p',{class:'mut'},h('b',(LBL[k]||k)+': '),w.tags[k].join(', '))),h('p',{class:'mut'},`Published ${w.published} · Updated ${w.updated||'—'} · ${w.words.toLocaleString()} words · Chapters ${w.chap}`));
  const body=R.idx?[h('h2',{class:'c'},'Chapter index'),h('div',{class:'ix'},c.map((x,n)=>B(`${n+1}. ${x.title||'Chapter '+(n+1)}`,()=>{R.all=false;go(n)})))]:R.all?c.map((x,n)=>chap(x,n)):chap(c[i],i);
- const y=scrollY;app.replaceChildren(...nav('top'),h('h1',{class:'t'},w.title),h('div',{class:'c mut'},'by '+w.author),info,...body.flat(),...nav('bot'));return y}
+ const y=scrollY;app.replaceChildren(...nav('top'),h('h1',{class:'t'},w.title),h('div',{class:'c mut'},'by '+w.author),...(R.stream?[h('div',{class:'note c'},'☁ Streaming from GitHub. Tap “Save offline” to keep it on this device.')]:[]),info,...body.flat(),...nav('bot'));return y}
 function draw(){const y=scrollY;R?reader():lib();applySet();if(R&&!R.fresh)scrollTo(0,y)}
-async function start(){try{await openDB();await load()}catch(e){app.textContent='Storage is unavailable in this browser.';return}applySet();draw()}
+async function start(){try{await openDB();await load()}catch(e){app.textContent='Storage is unavailable in this browser.';return}applySet();draw();ghOpen()}
 try{if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js")}catch(e){}
 applySet();lockScreen();
 </script></body></html>
