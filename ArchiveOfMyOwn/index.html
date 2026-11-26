@@ -40,7 +40,7 @@ const h=(t,a={},...c)=>{if(a==null)a={};else if(typeof a!='object'||a instanceof
 const ls=(k,v)=>{try{return v===undefined?localStorage.getItem(k):localStorage.setItem(k,v)}catch(e){}};
 const app=$('#app');
 const CATS=['Ratings','Warnings','Categories','Fandoms','Characters','Relationships','Tags'],LBL={Tags:'Additional Tags'};
-const VER=11;let db,W=[],COLS=[],R=null,SECT=[],LOCKED=true,OPENING=false;const fresh=new Set();const pin=(id,on=true)=>{const x=new Set(JSON.parse(ls('pins')||'[]'));on?x.add(id):x.delete(id);ls('pins',JSON.stringify([...x]))};
+const VER=13;let db,W=[],COLS=[],R=null,SECT=[],LOCKED=true,OPENING=false;const fresh=new Set();const pin=(id,on=true)=>{const x=new Set(JSON.parse(ls('pins')||'[]'));on?x.add(id):x.delete(id);ls('pins',JSON.stringify([...x]))};
 async function gsha(t){const b=new TextEncoder().encode(t),p=new TextEncoder().encode('blob '+b.length+'\0'),u=new Uint8Array(p.length+b.length);u.set(p);u.set(b,p.length);return[...new Uint8Array(await crypto.subtle.digest('SHA-1',u))].map(x=>x.toString(16).padStart(2,'0')).join('')}
 let S={q:'',sort:'added',dir:-1,comp:'all',inc:new Set(),exc:new Set(),col:'',fo:false,sq:{inc:'',exc:''}};
 let SET=Object.assign({theme:'auto',font:'Georgia,serif',size:19,lh:1.7},JSON.parse(ls('set')||'{}'));
@@ -94,7 +94,8 @@ async function exp(){const f=new File([JSON.stringify({v:1,works:W,text:await al
  try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}}catch(e){}
  h('a',{href:URL.createObjectURL(f),download:f.name}).click()}
 /* ---------- github sync ---------- */
-const GH=()=>JSON.parse(ls('gh')||'null');
+const GH_REPO='juliamsheehan/ArchiveOfMyOwn',GH_BRANCH='main';
+const GH=()=>{const g=JSON.parse(ls('gh')||'null');return g&&g.token?{repo:GH_REPO,branch:GH_BRANCH,token:g.token}:null};
 const b64=s=>{const b=new TextEncoder().encode(s);let o='';for(let i=0;i<b.length;i+=8192)o+=String.fromCharCode(...b.subarray(i,i+8192));return btoa(o)};
 const hs=async s=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].slice(0,8).map(b=>b.toString(16).padStart(2,'0')).join('');
 async function gh(path,o={}){const g=GH(),m=o.method||'GET';
@@ -114,12 +115,19 @@ async function ghIndex(drop){const g=GH(),ix=await gh('index.json'),raw=ix?await
  await gh('index.json',{method:'PUT',body:{message:'Update index',content:b64(out),branch:g.branch||'main',sha:ix&&ix.sha}})}
 async function ghRemove(id){const g=GH(),f=(await ghList()).find(x=>x.name==id+'.json');if(f)await gh('works/'+f.name,{method:'DELETE',body:{message:'Delete work',sha:f.sha,branch:g.branch||'main'}});await ghIndex(id);
  const m=JSON.parse(ls('syncmap')||'{}'),r=JSON.parse(ls('rsha')||'{}');delete m[id];delete r[id];ls('syncmap',JSON.stringify(m));ls('rsha',JSON.stringify(r))}
+const normRepo=x=>x.trim().replace(/^https?:\/\/github\.com\//i,'').replace(/\.git$/i,'').replace(/\/+$/,'');
+async function ghCheck(){const g=GH(),H={Authorization:'Bearer '+g.token,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'};
+ if(!/^[\w.-]+\/[\w.-]+$/.test(g.repo||''))throw new Error('the repo must be written as owner/repo, for example juliamsheehan/ArchiveOfMyOwn');
+ const r=await fetch(`https://api.github.com/repos/${g.repo}/branches/${encodeURIComponent(g.branch||'main')}`,{headers:H});
+ if(r.status==401)throw new Error('GitHub rejected the token, so generate a new one');
+ if(r.status==404)throw new Error(`can’t find repo “${g.repo}” (branch “${g.branch||'main'}”), or the token has no access to it. Check the owner/repo spelling and the token’s repository access`);
+ if(!r.ok)throw new Error(''+r.status)}
 async function ghFill(todo){const total=todo.length,q=[...todo];let done=0,added=0;
  const wk=async()=>{while(q.length){const f=q.shift();try{const j=JSON.parse(await gh('works/'+f.name,{raw:true})),m=j.meta;m.offline=false;m.last=0;m.added=m.added||Date.now();m.q=mkq(m);await put('works',m);added++}catch(e){}
   done++;stat(`Adding your library… ${done} of ${total}`);if(done%20==0){await load();if(!R&&!LOCKED&&$('#res'))list()}}};
  await Promise.all([wk(),wk(),wk(),wk()]);return added}
 async function ghOpen(quiet){const g=GH();if(!g||!g.token||ls('autopull')=='0'||LOCKED||(quiet&&R)||OPENING)return;OPENING=true;
- try{if(!quiet)stat('Checking GitHub…');const sig=()=>JSON.stringify([COLS,W.map(w=>w.id)]),b4=sig();let n=0,u=0;
+ try{if(!quiet){stat('Checking GitHub…');await ghCheck()}const sig=()=>JSON.stringify([COLS,W.map(w=>w.id)]),b4=sig();let n=0,u=0;
   const fs=await ghList(),names=new Set(fs.map(f=>f.name));
   if(!quiet||fs.length!=+(ls('lastn')||-1)){
    const ixr=await gh('index.json',{raw:true}),ix=ixr?JSON.parse(ixr):[];
@@ -140,7 +148,7 @@ async function ghOpen(quiet){const g=GH();if(!g||!g.token||ls('autopull')=='0'||
    for(const w of W.filter(w=>off(w)&&!pins.has(w.id)&&!(R&&R.w.id==w.id)&&sh[w.id+'.json'])){if(LOCKED)break;const t=await get('text',w.id);if(!t)continue;
     if(await gsha(JSON.stringify({meta:{...w,last:0},ch:t.ch}))==sh[w.id+'.json']){await del('text',w.id);w.offline=false;await put('works',w);if(++freed%10==0)stat(`Freeing space on this device… ${freed}`)}}}
   await load();const ch=sig()!=b4,act=n||u||ch||freed;if(!R&&!LOCKED&&(!quiet||act)&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))draw();
-  if(!quiet||act)stat(`Synced · ${W.length} works in your library`+(freed?` · freed ${freed} from this device`:''))}catch(e){if(!quiet)stat('Couldn’t check GitHub ('+e.message+')')}finally{OPENING=false}}
+  if(!quiet||act)stat(!fs.length&&!W.length?'Connected, but this repo has no saved fics yet (no “works” folder). Check that this is your private backup repo.':`Synced · ${W.length} works in your library`+(freed?` · freed ${freed} from this device`:''))}catch(e){if(!quiet)stat('Couldn’t check GitHub ('+e.message+')')}finally{OPENING=false}}
 async function clearDL(){const g=GH();if(!g||!g.token)throw new Error('connect GitHub sync first, so removed works can be streamed again');
  let names;try{names=new Set((await ghList()).map(f=>f.name))}catch(e){throw new Error('couldn’t confirm your works are on GitHub ('+e.message+')')}
  let n=0,keep=0;for(const w of W.filter(off)){if(!names.has(w.id+'.json')){keep++;continue}await del('text',w.id);w.offline=false;await put('works',w);n++}
@@ -163,12 +171,12 @@ async function ghPull(only,say=()=>{}){let fs=(await ghList());if(only)fs=fs.fil
  for(const f of fs){say(`Restoring ${++n}/${fs.length}`);const j=JSON.parse(await gh('works/'+f.name,{raw:true})),old=W.find(x=>x.id==j.meta.id);j.meta.offline=true;j.meta.last=old?old.last||0:0;if(old)j.meta.added=old.added;await put('text',{id:j.meta.id,ch:j.ch});await put('works',j.meta);pin(j.meta.id);{const m=JSON.parse(ls('syncmap')||'{}'),r=JSON.parse(ls('rsha')||'{}');m[j.meta.id]=await hs(JSON.stringify({meta:{...j.meta,last:0},ch:j.ch}));r[j.meta.id]=f.sha;ls('syncmap',JSON.stringify(m));ls('rsha',JSON.stringify(r))}}
  if(!only){const c=await gh('collections.json',{raw:true});if(c)for(const x of mergeCols(COLS,JSON.parse(c)))await put('cols',x)}
  await load();return `Done. ${n} work${n==1?'':'s'} restored.`}
-function ghUI(){const g=GH()||{},sty='margin:4px 0',r=h('input',{type:'text',style:sty,placeholder:'owner/repo, e.g. juliamsheehan/fic-backup',value:g.repo||''}),b=h('input',{type:'text',style:sty,placeholder:'Branch (default: main)',value:g.branch||''}),t=h('input',{type:'password',style:sty,placeholder:'Fine-grained access token',value:g.token||''}),s=h('p',{class:'mut'});
- const run=f=>async()=>{ls('gh',JSON.stringify({repo:r.value.trim(),branch:b.value.trim()||'main',token:t.value.trim()}));if(!r.value.trim()||!t.value.trim()){s.textContent='Enter the repo and token first.';return}
+function ghUI(){const has=!!GH(),t=h('input',{type:'password',style:'margin:4px 0',placeholder:has?'Token saved. Paste a new one to replace it':'Paste your access token'}),s=h('p',{class:'mut'});
+ const run=f=>async()=>{const tk=t.value.trim()||(GH()||{}).token;if(!tk){s.textContent='Paste your access token first.';return}ls('gh',JSON.stringify({token:tk}));t.value='';
   try{s.textContent='Working…';s.textContent=await f(x=>s.textContent=x)}catch(e){s.textContent='Failed: '+e.message}};
- modal(h('h3','GitHub sync'),h('p',{class:'mut'},'Use a PRIVATE repo. The token is stored in this browser only. Sync works from the GitHub Pages copy of the app, not the preview.'),r,b,t,
+ modal(h('h3','GitHub sync'),h('p',{class:'mut'},`Synced with ${GH_REPO} (${GH_BRANCH}). The token is stored in this browser only. Sync works from the GitHub Pages copy of the app, not the preview.`),t,
   h('div',{class:'row'},h('button',{class:'p',onclick:run(async()=>{await ghOpen();return sst||'Done.'})},'Connect & load library'),h('button',{onclick:run(say=>ghPush(null,say))},'Push to GitHub'),two('Download EVERYTHING (can fill your storage)',run(say=>ghPull(null,say).then(m=>{draw();return m})))),h('label',{class:'ck'},h('input',{type:'checkbox',checked:ls('auto')!='0',onchange:e=>ls('auto',e.target.checked?'1':'0')}),'Push automatically after every change'),h('label',{class:'ck'},h('input',{type:'checkbox',checked:ls('autopull')!='0',onchange:e=>ls('autopull',e.target.checked?'1':'0')}),'Check GitHub for updates when the app opens'),h('label',{class:'ck'},h('input',{type:'checkbox',checked:ls('keepup')=='1',onchange:e=>ls('keepup',e.target.checked?'1':'0')}),'Keep newly uploaded fics downloaded on this device'),s,
-  h('div',{class:'row'},h('button',{onclick:()=>{ls('gh','');ls('syncmap','');r.value=b.value=t.value='';s.textContent='Disconnected and token removed from this browser.'}},'Disconnect')))}
+  h('div',{class:'row'},h('button',{onclick:()=>{ls('gh','');ls('syncmap','');t.value='';s.textContent='Disconnected and token removed from this browser.'}},'Disconnect')))}
 /* ---------- helpers ---------- */
 function modal(...c){const o=h('div',{class:'ov',onclick:e=>e.target==o&&o.remove()},h('div',{class:'md'},...c,h('div',{class:'row'},h('button',{onclick:()=>o.remove()},'Close'))));document.body.append(o);return o}
 const two=(label,fn)=>{const b=h('button',{onclick:()=>{if(b.dataset.a){fn()}else{b.dataset.a=1;b.textContent='Tap again to confirm';setTimeout(()=>{delete b.dataset.a;b.textContent=label},3000)}}},label);return b};

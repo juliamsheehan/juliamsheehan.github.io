@@ -1,6 +1,6 @@
 # Archive of My Own
 
-**Current version: 11** (shown under the title inside the app)
+**Current version: 13** (shown under the title inside the app)
 
 A personal, password-protected library app for reading AO3 fics when archiveofourown.org is down.
 
@@ -19,9 +19,11 @@ A personal, password-protected library app for reading AO3 fics when archiveofou
 - `manifest.webmanifest` and `icon-*.png` give it a name and icon on the home screen.
 
 ## GitHub sync
-Fic text is stored in a separate **private** repo, never in this one. In the app, go to Aa ⚙ → GitHub sync and enter that private repo's name (`owner/repo`), the branch (`main`) and a fine-grained access token with Contents read and write access to that repo only.
+Fic text is stored in a separate **private** repo, never in this one. In the app, go to Aa ⚙ → GitHub sync and paste a fine-grained access token with Contents read and write access to that repo only, then tap **Connect & load library**. The repo and branch are built in.
 
 ## Version history
+- **13:** The repo (`juliamsheehan/ArchiveOfMyOwn`) and branch (`main`) are built in, so setting up a new device only needs the access token.
+- **12:** Clear error messages when the repo name is wrong (it must be written as `owner/repo`), the branch is missing, or the token is rejected. Previously a wrong repo name just showed "0 works".
 - **11:** The library list now fills itself from GitHub on every open, so every work is always visible. New uploads are saved to GitHub and then removed from the device (works are streamed). Downloads are optional. The app reloads itself when a new version is deployed.
 - **10:** Remove all downloads button, safer storage handling, and app version label.
 - **9 and earlier:** GitHub sync, duplicate check, shared collections, and streaming.
