@@ -40,7 +40,7 @@ const h=(t,a={},...c)=>{if(a==null)a={};else if(typeof a!='object'||a instanceof
 const ls=(k,v)=>{try{return v===undefined?localStorage.getItem(k):localStorage.setItem(k,v)}catch(e){}};
 const app=$('#app');
 const CATS=['Ratings','Warnings','Categories','Fandoms','Characters','Relationships','Tags'],LBL={Tags:'Additional Tags'};
-const VER=13;let db,W=[],COLS=[],R=null,SECT=[],LOCKED=true,OPENING=false;const fresh=new Set();const pin=(id,on=true)=>{const x=new Set(JSON.parse(ls('pins')||'[]'));on?x.add(id):x.delete(id);ls('pins',JSON.stringify([...x]))};
+const VER=14;let db,W=[],COLS=[],R=null,SECT=[],LOCKED=true,OPENING=false;const fresh=new Set();const pin=(id,on=true)=>{const x=new Set(JSON.parse(ls('pins')||'[]'));on?x.add(id):x.delete(id);ls('pins',JSON.stringify([...x]))};
 async function gsha(t){const b=new TextEncoder().encode(t),p=new TextEncoder().encode('blob '+b.length+'\0'),u=new Uint8Array(p.length+b.length);u.set(p);u.set(b,p.length);return[...new Uint8Array(await crypto.subtle.digest('SHA-1',u))].map(x=>x.toString(16).padStart(2,'0')).join('')}
 let S={q:'',sort:'added',dir:-1,comp:'all',inc:new Set(),exc:new Set(),col:'',fo:false,sq:{inc:'',exc:''}};
 let SET=Object.assign({theme:'auto',font:'Georgia,serif',size:19,lh:1.7},JSON.parse(ls('set')||'{}'));
@@ -76,9 +76,9 @@ function parse(txt,name){
  meta.q=mkq(meta);
  return{meta,ch}}
 async function load(){W=await all('works');COLS=await all('cols')}
-const norm=x=>(x||'').toLowerCase().replace(/[^\p{L}\p{N}]+/g,' ').trim();
+const norm=x=>(x||'').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
 const askDup=(m,d)=>new Promise(res=>{const same=d.id==m.id,o=h('div',{class:'ov'},h('div',{class:'md'},h('h3','Already in your library'),
- h('p',`“${d.title}” by ${d.author} looks like a fic you already saved (${same?'same AO3 work':'same title and author'}). The new file may be an updated or slightly edited copy.`),
+ h('p',`Saved: “${d.title}” by ${d.author}. New file: “${m.title}” by ${m.author}. They look like the same fic (${same?'same AO3 work number':'same title and author'}). The new file may be an updated or slightly edited copy.`),
  d.url?h('p',{},'Original: ',h('a',{href:d.url,target:'_blank',rel:'noopener'},d.url)):h('p',{class:'mut'},'No original link was saved.'),
  h('p',{class:'mut'},same?'Proceeding replaces the saved copy with this file. Your reading place and collections are kept.':'Proceeding adds this file as a separate work.'),
  h('div',{class:'row'},h('button',{class:'p',onclick:()=>{o.remove();res(true)}},'Proceed anyway'),h('button',{onclick:()=>{o.remove();res(false)}},'Skip this file'))));document.body.append(o)});
@@ -86,7 +86,7 @@ async function imp(files){let n=0,sk=0,bad=[];const pool=[...W];
  if(GH()){try{const r=await gh('index.json',{raw:true});if(r)JSON.parse(r).forEach(x=>{if(!pool.some(y=>y.id==x.id))pool.push(x)})}catch(e){}}
  for(const f of files){try{const t=await f.text();
   if(/\.json$/i.test(f.name)){const j=JSON.parse(t);for(const w of j.works){await put('works',w);mark(w.id)}for(const x of j.text)await put('text',x);for(const c of j.cols||[])await put('cols',c);n+=j.works.length}
-  else{const{meta,ch}=parse(t,f.name),old=W.find(x=>x.id==meta.id),dup=pool.find(x=>x.id==meta.id)||pool.find(x=>norm(x.title)==norm(meta.title)&&norm(x.author)==norm(meta.author));
+  else{const{meta,ch}=parse(t,f.name),old=W.find(x=>x.id==meta.id),dup=pool.find(x=>x.id==meta.id)||(norm(meta.title)&&norm(meta.author)?pool.find(x=>norm(x.title)==norm(meta.title)&&norm(x.author)==norm(meta.author)):null);
    if(dup&&!(await askDup(meta,dup))){sk++;continue}
    if(old){meta.added=old.added;meta.last=old.last}await put('works',meta);await put('text',{id:meta.id,ch});mark(meta.id);fresh.add(meta.id);pool.push(meta);n++}}catch(e){bad.push(f.name)}}
  await load();draw();modal(h('p',`Imported ${n} work${n==1?'':'s'}.`+(sk?` Skipped ${sk} duplicate${sk==1?'':'s'}.`:'')+(bad.length?` Couldn’t read: ${bad.join(', ')}`:'')))}
